@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Concepts Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      padding: 20px;
+    }
+    h1 { color: #333; }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin: auto;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #4caf50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    #output {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>JS Concepts Playground</h1>
+    <input type="text" id="userInput" placeholder="Enter your name">
+    <button id="greetBtn">Greet Me</button>
+    <button id="showArrayBtn">Show Fruits</button>
+    <button id="classBtn">Create Student</button>
+
+    <div id="output">Output will appear here...</div>
+  </div>
+
+  <script>
+    // VARIABLES
+    let fruits = ["Apple", "Banana", "Cherry", "Mango"];
+
+    // OBJECT
+    let person = {
+      name: "Guest",
+      age: 18,
+      sayHello: function() {
+        return `Hello, my name is ${this.name} and I am ${this.age} years old.`;
+      }
+    };
+
+    // CLASS
+    class Student {
+      constructor(name, grade) {
+        this.name = name;
+        this.grade = grade;
+      }
+      introduce() {
+        return `I am ${this.name}, and I’m in grade ${this.grade}.`;
+      }
+    }
+
+    // FUNCTION for output
+    function displayMessage(msg) {
+      document.getElementById("output").innerText = msg;
+    }
+
+    // EVENT: Greet button
+    document.getElementById("greetBtn").addEventListener("click", function() {
+      let inputName = document.getElementById("userInput").value;
+      if (inputName.trim() === "") {
+        displayMessage("❌ Please enter your name!");
+      } else {
+        person.name = inputName;
+        displayMessage(person.sayHello());
+      }
+    });
+
+    // EVENT: Show Array button
+    document.getElementById("showArrayBtn").addEventListener("click", function() {
+      let list = "Fruits List: ";
+      for (let i = 0; i < fruits.length; i++) {
+        list += fruits[i] + (i < fruits.length - 1 ? ", " : "");
+      }
+      displayMessage(list);
+    });
+
+    // EVENT: Create Student button
+    document.getElementById("classBtn").addEventListener("click", function() {
+      let student = new Student("Alex", 10);
+      displayMessage(student.introduce());
+    });
+  </script>
+</body>
+</html>
