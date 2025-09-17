@@ -1,0 +1,38 @@
+<h1 align=center>TIA03-Tables-Lists-Eman</h1>
+
+2x2 table <br>
+
+<table border="1">
+<tr><th>Header 1</th><th>Header 2</th></tr>
+<tr><td>A</td><td>B</td></tr>
+<tr><td>C</td><td>D</td></tr>
+</table><br>
+
+Make a 3 x 4 table with #, animal, image, link headings<br>
+
+Unordered list<br>
+<ul>
+   <li>Toy Car</li>
+   <li>Teddy Bear</li>
+   <li>Building Blocks</li>
+</ul><br><br>
+
+Ordered List <br>
+<ol>
+   <li>Toy Car</li>
+   <li>Teddy Bear</li>
+   <li>Building Blocks</li>
+</ol><br><br>
+
+Definition list
+
+<dl>
+   <dt>HTML</dt>
+      <dd>A language for creating web pages.</dd>
+
+   <dt>CSS</dt>
+      <dd>A language for styling web pages.</dd>
+
+   <dt>JavaScript</dt>
+      <dd>A language for making web pages interactive.</dd>
+</dl>
