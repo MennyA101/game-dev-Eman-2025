@@ -1,4 +1,0 @@
-<script>
-
-function mySquareFunction(){
-let myIn01 = parseFloat(document.getElementById('myNum01').value)
