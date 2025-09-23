@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cool CSS Features</title>
+</head>
+<body style="margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #74ebd5, #acb6e5); color: #333;">
+
+  <header style="text-align: center; padding: 2rem;">
+    <h1 style="text-shadow: 2px 2px 5px rgba(0,0,0,0.3);">Cool CSS Features</h1>
+    <p style="font-style: italic;">Simple examples with inline CSS</p>
+  </header>
+
+  <main style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem; padding: 1rem; max-width: 900px; margin: auto;">
+
+    <!-- Gradient Button -->
+    <button style="
+      background: linear-gradient(45deg, #ff6ec4, #7873f5);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255,110,196,0.5);
+      transition: background 0.3s ease, transform 0.3s ease;
+    "
+    onmouseover="this.style.background='linear-gradient(45deg, #7873f5, #ff6ec4)'; this.style.transform='scale(1.1)';"
+    onmouseout="this.style.background='linear-gradient(45deg, #ff6ec4, #7873f5)'; this.style.transform='scale(1)';"
+    >
+      Gradient Button
+    </button>
+
+    <!-- Shadow Box -->
+    <div style="
+      width: 200px;
+      height: 150px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: box-shadow 0.3s ease;
+    "
+    onmouseover="this.style.boxShadow='0 15px 30px rgba(0,0,0,0.4)';"
+    onmouseout="this.style.boxShadow='0 10px 20px rgba(0,0,0,0.2)';"
+    >
+      Shadow Effect
+    </div>
+
+    <!-- Rotating Icon -->
+    <div style="
+      font-size: 4rem;
+      cursor: pointer;
+      transition: transform 0.5s ease;
+      user-select: none;
+    "
+    onmouseover="this.style.transform='rotate(360deg)';"
+    onmouseout="this.style.transform='rotate(0deg)';"
+    >
+      🔄
+    </div>
+
+    <!-- Flexbox Container -->
+    <div style="
+      background: #fff;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 260px;
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    ">
+      <div style="background:#ff6ec4; color:white; padding:1rem; border-radius: 10px; flex:1; margin: 0 0.3rem; text-align:center;">
+        Flex 1
+      </div>
+      <div style="background:#7873f5; color:white; padding:1rem; border-radius: 10px; flex:2; margin: 0 0.3rem; text-align:center;">
+        Flex 2
+      </div>
+      <div style="background:#3ad59f; color:white; padding:1rem; border-radius: 10px; flex:1; margin: 0 0.3rem; text-align:center;">
+        Flex 1
+      </div>
+    </div>
+
+  </main>
+
+  <footer style="text-align: center; margin: 2rem 0; color: #555;">
+    Created with inline CSS ✨
+  </footer>
+
+</body>
+</html>
