@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weekday Journal (Sept to Jan)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 0 10px;
+      background: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .month {
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .month-header {
+      background: #007acc;
+      color: white;
+      cursor: pointer;
+      padding: 10px;
+      user-select: none;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    .month-entries {
+      padding: 10px;
+      display: none;
+    }
+    .entry {
+      border-bottom: 1px solid #ddd;
+      padding: 8px 0;
+    }
+    .entry:last-child {
+      border-bottom: none;
+    }
+    .date {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .text {
+      white-space: pre-wrap;
+      background: #eee;
+      padding: 8px;
+      border-radius: 4px;
+      min-height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Weekday Journal (Sept to Jan)</h1>
+  <div id="journal">Loading journal entries...</div>
+
+  <script>
+    async function loadJournal() {
+      try {
+        const res = await fetch('journal.json');
+        if (!res.ok) throw new Error('Could not load journal.json');
+        const entries = await res.json();
+
+        const journalDiv = document.getElementById('journal');
+        journalDiv.innerHTML = '';
+
+        const start = new Date(2025, 8, 1); // Sept 1, 2025 (month 8 = Sept)
+        const end = new Date(2026, 0, 31);  // Jan 31, 2026
+
+        // Group entries by month-year string like "September 2025"
+        const months = {};
+
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+          const day = d.getDay();
+          if (day >= 1 && day <= 5) { // Weekdays Mon-Fri
+            const isoDate = d.toISOString().slice(0, 10);
+            const dateStr = d.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const monthKey = d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' });
+
+            if (!months[monthKey]) {
+              months[monthKey] = [];
+            }
+
+            months[monthKey].push({
+              dateStr,
+              isoDate,
+              text: entries[isoDate] || '(No entry)'
+            });
+          }
+        }
+
+        // Current month-year string to auto-open
+        const now = new Date();
+        const currentMonthKey = now.toLocaleDateString(undefined, { year: 'numeric', month: 'long' });
+
+        // Create collapsible sections for each month
+        for (const [monthName, days] of Object.entries(months)) {
+          const monthDiv = document.createElement('div');
+          monthDiv.className = 'month';
+
+          const header = document.createElement('div');
+          header.className = 'month-header';
+          header.textContent = monthName;
+
+          const entriesDiv = document.createElement('div');
+          entriesDiv.className = 'month-entries';
+
+          // Show current month expanded by default
+          if (monthName === currentMonthKey) {
+            entriesDiv.style.display = 'block';
+          }
+
+          days.forEach(day => {
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'entry';
+
+            const dateLabel = document.createElement('div');
+            dateLabel.className = 'date';
+            dateLabel.textContent = day.dateStr;
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'text';
+            textDiv.textContent = day.text;
+
+            entryDiv.appendChild(dateLabel);
+            entryDiv.appendChild(textDiv);
+            entriesDiv.appendChild(entryDiv);
+          });
+
+          header.addEventListener('click', () => {
+            const isVisible = entriesDiv.style.display === 'block';
+            entriesDiv.style.display = isVisible ? 'none' : 'block';
+          });
+
+          monthDiv.appendChild(header);
+          monthDiv.appendChild(entriesDiv);
+          journalDiv.appendChild(monthDiv);
+        }
+      } catch (err) {
+        document.getElementById('journal').textContent = 'Error loading journal entries.';
+        console.error(err);
+      }
+    }
+
+    loadJournal();
+  </script>
+</body>
+</html>
