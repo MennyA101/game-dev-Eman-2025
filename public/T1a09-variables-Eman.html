@@ -1,1 +1,77 @@
+<h2> align=center> t1a09-variables-Eman.html</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JavaScript Variables Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .box {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>JavaScript Variables and Types</h1>
+  <div id="output"></div>
 
+  <script>
+    // Variable declarations
+    var oldWay = "I am var";
+    let changeable = "I am let";
+    const fixed = "I am const";
+
+    // Different data types
+    let myInteger = 42;
+    let myFloat = 3.14;
+    let myString = "Hello";
+    let myChar = "A"; // char is just a string of length 1
+    let myBoolean = true;
+    let myBigInt = 123456789012345678901234567890n;
+    let myNull = null;
+    let myUndefined;
+    let myArray = [1, 2, 3];
+    let myObject = { name: "Alex", age: 20 };
+
+    // Function to display results
+    function show(name, value) {
+      const box = document.createElement("div");
+      box.className = "box";
+      box.innerHTML = `<strong>${name}:</strong> <code>${value}</code> <br>
+                       <em>Type:</em> <code>${typeof value}</code>`;
+      document.getElementById("output").appendChild(box);
+    }
+
+    // Show all variables
+    show("var oldWay", oldWay);
+    show("let changeable", changeable);
+    show("const fixed", fixed);
+    show("Integer", myInteger);
+    show("Float", myFloat);
+    show("String", myString);
+    show("Char (string)", myChar);
+    show("Boolean", myBoolean);
+    show("BigInt", myBigInt);
+    show("Null", myNull);
+    show("Undefined", myUndefined);
+    show("Array", myArray);
+    show("Object", JSON.stringify(myObject));
+  </script>
+</body>
+</html>
