@@ -1,4 +1,68 @@
-<script>
-  let myArray = new Array
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Array Example</title>
+</head>
+<body>
+  <h2 align="center">t1a11-for-arrays-fred.html</h2>
 
-  myArray[0]
+  Max Array Entry: 
+  <input type="text" id="myText01" value="3"><br><br>
+
+  <input type="button" value="Show All Arrays" onclick="showArrays()"><br><br>
+
+  <div id="myDiv01">...</div>
+
+  <script>
+    // Example 1 - Names
+    let myArray = ["Fred", "Mary", "Zizzy"];
+
+    // Example 2 - Numbers
+    let numArray = [10, 20, 30, 40, 50];
+
+    // Example 3 - Colors
+    let colorArray = ["Red", "Blue", "Green", "Yellow"];
+
+    // Example 4 - Animals
+    let animalArray = ["Dog", "Cat", "Elephant", "Lion"];
+
+    // Example 5 - Fruits
+    let fruitArray = ["Apple", "Banana", "Mango", "Grapes", "Orange"];
+
+    // Example 6 - Mixed types
+    let mixedArray = ["Hello", 99, true, 45.6, "World"];
+
+    // Example 7 - Countries
+    let countryArray = ["Canada", "USA", "Mexico", "France", "Japan"];
+
+    // Example 8 - Days of the week
+    let daysArray = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    function showArrays() {
+      let myMax = document.getElementById('myText01').value;
+      let output = "";
+
+      // Function to loop through and display array contents
+      function displayArray(arr, title) {
+        output += "<b>" + title + "</b><br>";
+        for (let i = 0; i < myMax && i < arr.length; i++) {
+          output += "Loop #: " + i + " → Array Entry: " + arr[i] + "<br>";
+        }
+        output += "<br>";
+      }
+
+      // Display all arrays
+      displayArray(myArray, "Names Array");
+      displayArray(numArray, "Numbers Array");
+      displayArray(colorArray, "Colors Array");
+      displayArray(animalArray, "Animals Array");
+      displayArray(fruitArray, "Fruits Array");
+      displayArray(mixedArray, "Mixed Array");
+      displayArray(countryArray, "Countries Array");
+      displayArray(daysArray, "Days of the Week Array");
+
+      document.getElementById('myDiv01').innerHTML = output;
+    }
+  </script>
+</body>
+</html>
