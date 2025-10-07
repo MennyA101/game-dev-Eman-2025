@@ -1,6 +1,0 @@
-<h1 align=center> t1a02-video-flac-Eman.html </h1>
-
-<input id="myNum01" type="number" value="11" placeholder="12">
-<button onclick="mysquareFunction()">Go</button>
-<br><br>
-<span id="mySpan01"></span>
