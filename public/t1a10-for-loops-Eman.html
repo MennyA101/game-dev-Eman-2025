@@ -1,6 +1,49 @@
 <h2 align=center>t1a10-for-loops-fred.html</h2>
 
-<input id="myNum01" type=number value="4" ><br>
+<input id="myNum01" type=number value="4"><br>
 
-<input type=button value="myEvent squares" onclick="{let myTemp = ''
-document.getEe
+<input type=button value="myEvent squares" onclick="{
+  let myTemp = ''
+  document.getElementById('myDiv01').innerHTML = ''
+
+  // Loop 1: counts 0–9
+  for (let x=0; x<10; x++){
+    if (x == 3){
+      myTemp += x + ' third <br>'
+    } else {
+      myTemp += x + '<br>'
+    }
+  }
+
+  // Loop 2: counts down 10–1
+  for (let x=10; x>0; x--){
+    myTemp += 'Countdown: ' + x + '<br>'
+  }
+
+  // Loop 3: squares numbers 1–5
+  for (let x=1; x<=5; x++){
+    myTemp += x + ' squared = ' + (x*x) + '<br>'
+  }
+
+  // Loop 4: multiples of 2 up to 20
+  for (let x=2; x<=20; x+=2){
+    myTemp += 'Even number: ' + x + '<br>'
+  }
+
+  // Loop 5: read number from input
+  let n = parseInt(document.getElementById('myNum01').value)
+  for (let x=1; x<=n; x++){
+    myTemp += 'From input: ' + x + '<br>'
+  }
+
+  // Loop 6: while loop example
+  let y = 0
+  while (y < 5){
+    myTemp += 'While loop number: ' + y + '<br>'
+    y++
+  }
+
+  document.getElementById('myDiv01').innerHTML = myTemp
+}"><br>
+
+<div id="myDiv01">...</div>
