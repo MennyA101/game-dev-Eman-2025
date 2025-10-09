@@ -1,0 +1,101 @@
+ <h2 align="center">t1a12-for-events-Eman.html</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Events Example</title>
+    <script>
+        // Event functions
+        function showAlert() {
+            alert("Button clicked!");
+        }
+
+        function changeColor() {
+            document.getElementById("hoverDiv").style.backgroundColor = "lightblue";
+        }
+
+        function resetColor() {
+            document.getElementById("hoverDiv").style.backgroundColor = "lightgray";
+        }
+
+        function showMessage() {
+            document.getElementById("inputField").value = "You typed something!";
+        }
+
+        function linkClicked(event) {
+            event.preventDefault(); // prevents default link behavior
+            alert("Link clicked!");
+        }
+
+        function mouseOverImg() {
+            document.getElementById("image").style.width = "200px";
+        }
+
+        function mouseOutImg() {
+            document.getElementById("image").style.width = "150px";
+        }
+
+        function selectOption() {
+            alert("Option selected!");
+        }
+    </script>
+</head>
+<body>
+    <h1>HTML Events Examples</h1>
+
+    <!-- 1. onclick event (button) -->
+    <button onclick="showAlert()">Click Me</button>
+
+    <br><br>
+
+    <!-- 2. onmouseover and onmouseout events (div) -->
+    <div id="hoverDiv" 
+         onmouseover="changeColor()" 
+         onmouseout="resetColor()" 
+         style="width:150px; height:50px; background-color: lightgray; text-align:center; line-height:50px;">
+        Hover over me
+    </div>
+
+    <br>
+
+    <!-- 3. oninput event (input field) -->
+    <input id="inputField" type="text" oninput="showMessage()" placeholder="Type something...">
+
+    <br><br>
+
+    <!-- 4. onclick event (link) -->
+    <a href="https://example.com" onclick="linkClicked(event)">Click this link</a>
+
+    <br><br>
+
+    <!-- 5. onmouseover and onmouseout events (image) -->
+    <img id="image" src="https://via.placeholder.com/150" 
+         onmouseover="mouseOverImg()" 
+         onmouseout="mouseOutImg()" 
+         alt="Hover Image">
+
+    <br><br>
+
+    <!-- 6. onchange event (select) -->
+    <select onchange="selectOption()">
+        <option value="">Select an option</option>
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+    </select>
+
+    <br><br>
+
+    <!-- 7. onfocus event (textarea) -->
+    <textarea onfocus="alert('Textarea focused!')" placeholder="Click here to focus"></textarea>
+
+    <br><br>
+
+    <!-- 8. onload event (body) -->
+    <script>
+        window.onload = function() {
+            console.log("Page fully loaded!");
+        };
+    </script>
+
+</body>
+</html>
