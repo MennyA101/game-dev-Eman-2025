@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magic Playground 🪄</title>
+  <style>
+    body {
+      background-color: #ffe4f1;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      padding: 30px;
+      transition: background 0.5s;
+    }
+    h1 {
+      color: #e91e63;
+      transition: transform 0.3s;
+    }
+    select, input {
+      padding: 8px;
+      border: 2px solid #e91e63;
+      border-radius: 8px;
+      margin: 10px;
+      font-size: 1em;
+    }
+    #magicCircle {
+      width: 120px;
+      height: 120px;
+      background-color: #8e44ad;
+      border-radius: 50%;
+      margin: 20px auto;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #009688;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00796b;
+    }
+  </style>
+</head>
+<body onmousemove="sparkle(event)" onload="pageLoaded()">
+  <h1 id="title">Welcome to the Magic Playground ✨</h1>
+
+  <div id="magicCircle" onmouseover="spin()" onmouseout="stopSpin()"></div>
+
+  <p>
+    Choose a background color: 
+    <select id="colorPicker" onchange="changeBackground()">
+      <option value="">--Pick a color--</option>
+      <option value="#fff5ba">Sunny Yellow</option>
+      <option value="#bae1ff">Cool Blue</option>
+      <option value="#baffc9">Mint Green</option>
+      <option value="#ffb3ba">Pink Dream</option>
+    </select>
+  </p>
+
+  <p>
+    Your name: 
+    <input type="text" id="username" onfocus="focusInput()" onblur="blurInput()">
+  </p>
+
+  <button onclick="greetUser()">Say Hello 👋</button>
+
+  <p id="message"></p>
+
+  <script>
+    // 1. On page load
+    function pageLoaded() {
+      document.getElementById("message").innerText = "Page loaded — welcome!";
+    }
+
+    // 2. Change background color
+    function changeBackground() {
+      let color = document.getElementById("colorPicker").value;
+      document.body.style.backgroundColor = color || "#ffe4f1";
+    }
+
+    // 3. Input focus
+    function focusInput() {
+      document.getElementById("username").style.backgroundColor = "#fff0f5";
+      document.getElementById("message").innerText = "You’re about to type your name!";
+    }
+
+    // 4. Input blur (when clicked away)
+    function blurInput() {
+      document.getElementById("username").style.backgroundColor = "white";
+      document.getElementById("message").innerText = "You stopped typing!";
+    }
+
+    // 5. Mouse move sparkle effect
+    function sparkle(event) {
+      const x = event.clientX;
+      const y = event.clientY;
+      document.title = `✨ X:${x} | Y:${y}`;
+    }
+
+    // 6. Spin circle on hover
+    function spin() {
+      let circle = document.getElementById("magicCircle");
+      circle.style.transform = "rotate(360deg) scale(1.2)";
+      circle.style.backgroundColor = "#9c27b0";
+    }
+
+    // 7. Stop spin when mouse leaves
+    function stopSpin() {
+      let circle = document.getElementById("magicCircle");
+      circle.style.transform = "rotate(0deg) scale(1)";
+      circle.style.backgroundColor = "#8e44ad";
+    }
+
+    // 8. Button click greeting
+    function greetUser() {
+      const name = document.getElementById("username").value || "friend";
+      document.getElementById("message").innerText = `Nice to meet you, ${name}! 🌟`;
+    }
+  </script>
+</body>
+</html>
