@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fun Events Page 🎈</title>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      text-align: center;
+      font-family: 'Comic Sans MS', cursive;
+      padding: 40px;
+    }
+    h1 {
+      color: #ff6347;
+      transition: 0.3s;
+    }
+    button {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    #colorBox {
+      width: 150px;
+      height: 150px;
+      background: skyblue;
+      margin: 20px auto;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+    input {
+      padding: 8px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title" onmouseover="changeTitleColor()" onmouseout="resetTitle()">Welcome to Fun Events!</h1>
+
+  <p>Click the buttons, type, move your mouse, and press keys to see magic happen 😄</p>
+
+  <div id="colorBox" onclick="changeColor()" ondblclick="resetColor()"></div>
+
+  <button onclick="sayHello()">Click Me!</button>
+  <button onmouseover="hoverButton(this)" onmouseout="resetButton(this)">Hover Me!</button>
+
+  <p>
+    Type something: <input type="text" onkeydown="keyDown()" onkeyup="keyUp()" />
+  </p>
+
+  <p id="message"></p>
+
+  <script>
+    // 1. Change title color on hover
+    function changeTitleColor() {
+      document.getElementById("title").style.color = "#00bfff";
+    }
+
+    // 2. Reset title color
+    function resetTitle() {
+      document.getElementById("title").style.color = "#ff6347";
+    }
+
+    // 3. Change color box color on click
+    function changeColor() {
+      document.getElementById("colorBox").style.background = "gold";
+      document.getElementById("message").innerText = "You changed the box color!";
+    }
+
+    // 4. Reset box color on double click
+    function resetColor() {
+      document.getElementById("colorBox").style.background = "skyblue";
+      document.getElementById("message").innerText = "Box color reset!";
+    }
+
+    // 5. Button click alert
+    function sayHello() {
+      alert("Hello there! 👋");
+    }
+
+    // 6. Change button text on hover
+    function hoverButton(btn) {
+      btn.innerText = "You hovered me!";
+    }
+
+    // 7. Reset button text on mouse out
+    function resetButton(btn) {
+      btn.innerText = "Hover Me!";
+    }
+
+    // 8. Show message when typing
+    function keyDown() {
+      document.getElementById("message").innerText = "You’re typing...";
+    }
+
+    // 9. Message after typing stops
+    function keyUp() {
+      document.getElementById("message").innerText = "You stopped typing!";
+    }
+  </script>
+</body>
+</html>
