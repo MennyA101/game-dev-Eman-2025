@@ -1,13 +1,14 @@
- <h2 align="center">t1a12-for-events-Eman.html</h2>
+<h2 align="center">t1a12-for-events-Eman.html</h2>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HTML Events Example</title>
+    <title>HTML Events Example (No Pop-Ups)</title>
     <script>
         // Event functions
         function showAlert() {
-            alert("Button clicked!");
+            console.log("Button clicked!");
+            document.getElementById("status").innerText = "You clicked the button!";
         }
 
         function changeColor() {
@@ -19,12 +20,13 @@
         }
 
         function showMessage() {
-            document.getElementById("inputField").value = "You typed something!";
+            document.getElementById("status").innerText = "You typed something!";
         }
 
         function linkClicked(event) {
             event.preventDefault(); // prevents default link behavior
-            alert("Link clicked!");
+            console.log("Link clicked!");
+            document.getElementById("status").innerText = "You clicked a link!";
         }
 
         function mouseOverImg() {
@@ -36,12 +38,22 @@
         }
 
         function selectOption() {
-            alert("Option selected!");
+            document.getElementById("status").innerText = "You selected an option!";
         }
+
+        function textareaFocus() {
+            document.getElementById("status").innerText = "Textarea focused!";
+        }
+
+        window.onload = function() {
+            console.log("Page fully loaded!");
+            document.getElementById("status").innerText = "Page loaded!";
+        };
     </script>
 </head>
+
 <body>
-    <h1>HTML Events Examples</h1>
+    <h1>HTML Events Example (No Pop-Ups)</h1>
 
     <!-- 1. onclick event (button) -->
     <button onclick="showAlert()">Click Me</button>
@@ -86,16 +98,12 @@
     <br><br>
 
     <!-- 7. onfocus event (textarea) -->
-    <textarea onfocus="alert('Textarea focused!')" placeholder="Click here to focus"></textarea>
+    <textarea onfocus="textareaFocus()" placeholder="Click here to focus"></textarea>
 
     <br><br>
 
-    <!-- 8. onload event (body) -->
-    <script>
-        window.onload = function() {
-            console.log("Page fully loaded!");
-        };
-    </script>
+    <!-- Status display -->
+    <h3 id="status" style="color: darkblue; text-align:center;">Waiting for interaction...</h3>
 
 </body>
 </html>
