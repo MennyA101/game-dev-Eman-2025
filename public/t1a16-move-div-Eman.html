@@ -163,6 +163,116 @@
   function myKeypress(event) {
     alert(`You pressed: ${event.key}`);
   }
+
+  <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>8 Moving Objects with Collision Bounce</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #0f172a;
+    }
+    .object {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+    }
+    #obj1 { background: red; }
+    #obj2 { background: orange; }
+    #obj3 { background: yellow; }
+    #obj4 { background: green; }
+    #obj5 { background: cyan; }
+    #obj6 { background: blue; }
+    #obj7 { background: purple; }
+    #obj8 { background: pink; }
+    h1 {
+      color: white;
+      text-align: center;
+      margin: 10px;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
+<h1>8 Moving Objects — Bounce Off Each Other</h1>
+
+<div id="obj1" class="object"></div>
+<div id="obj2" class="object"></div>
+<div id="obj3" class="object"></div>
+<div id="obj4" class="object"></div>
+<div id="obj5" class="object"></div>
+<div id="obj6" class="object"></div>
+<div id="obj7" class="object"></div>
+<div id="obj8" class="object"></div>
+
+<script>
+  const objects = [];
+  const numObjects = 8;
+  const boxSize = 50;
+  const speed = 3;
+
+  // initialize positions and random directions
+  for (let i = 1; i <= numObjects; i++) {
+    const el = document.getElementById('obj' + i);
+    const x = Math.random() * (window.innerWidth - boxSize);
+    const y = Math.random() * (window.innerHeight - boxSize);
+    const dx = (Math.random() * 2 - 1) * speed;
+    const dy = (Math.random() * 2 - 1) * speed;
+    objects.push({ el, x, y, dx, dy });
+  }
+
+  function update() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    // move each object
+    for (let i = 0; i < objects.length; i++) {
+      const obj = objects[i];
+
+      obj.x += obj.dx;
+      obj.y += obj.dy;
+
+      // bounce off walls
+      if (obj.x <= 0 || obj.x >= w - boxSize) obj.dx *= -1;
+      if (obj.y <= 0 || obj.y >= h - boxSize) obj.dy *= -1;
+
+      // check collisions with other objects
+      for (let j = i + 1; j < objects.length; j++) {
+        const other = objects[j];
+        const dx = obj.x - other.x;
+        const dy = obj.y - other.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < boxSize) {
+          // simple bounce: reverse both directions
+          obj.dx *= -1;
+          obj.dy *= -1;
+          other.dx *= -1;
+          other.dy *= -1;
+
+          // move them slightly apart to avoid sticking
+          obj.x += obj.dx;
+          obj.y += obj.dy;
+          other.x += other.dx;
+          other.y += other.dy;
+        }
+      }
+
+      // update element position
+      obj.el.style.left = obj.x + 'px';
+      obj.el.style.top = obj.y + 'px';
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  update()
+  
 </script>
 
 </body>
