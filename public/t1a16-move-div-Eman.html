@@ -1,197 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>t1a16-move-div-Eman.html</title>
-  <style>
-    body {
-      background-color: #eef2ff;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-    }
-    h1, p {
-      text-align: center;
-    }
-    .object {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      border-radius: 10px;
-    }
-    #obj1 { background: red; top: 50px; left: 10px; }
-    #obj2 { background: orange; top: 120px; left: 10px; }
-    #obj3 { background: yellow; top: 190px; left: 10px; }
-    #obj4 { background: green; top: 260px; left: 10px; }
-    #obj5 { background: cyan; top: 330px; left: 10px; }
-    #obj6 { background: blue; top: 400px; left: 10px; }
-    #obj7 { background: purple; top: 470px; left: 10px; }
-    #obj8 { background: pink; top: 540px; left: 10px; }
-  </style>
-</head>
-
-<!-- ✅ Corrected body with working onkeypress -->
-<body onkeypress="myKeypress(event)">
-
-<!-- ✅ Your original script (cleaned up and functional) -->
+<body onkeyPress(event)">
 <script>
-  let myTimer01;
-
-  function myAuto() {
-    const myIm = document.getElementById('myImage01');
-    myIm.style.left = (parseInt(myIm.style.left) || 0) + 5 + 'px';
-    if (parseInt(myIm.style.left) > 600) {
-      myIm.style.left = '10px';
+  letmyTimer01
+  Function myAuto(){
+    const myIm = document.getElementById ('myImage01')
+    myIm.style.left = parseInt(myIm.style.left) + 5 +'px'
+    If parseInt(myIm.style.left) . 600){
+      myIn.style.left = '10px'
     }
   }
-
   function myKeypress(event) {
-    alert(`You pressed: ${event.key}`);
+    alert('you pressed: ${event.Key}');
   }
 </script>
+<h1 align=center>t1a16-move-div-Eman.html</h1>
 
-<h1>t1a16-move-div-Eman.html</h1>
-<p>8 different types of objects move in different ways</p>
+  have 8 different types of objects move in ifferent ways
 
-<!-- Example image for myAuto() demo -->
-<img id="myImage01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/120px-Rotating_earth_%28large%29.gif"
-     style="position:absolute; top:10px; left:10px; width:80px; height:80px; border-radius:10px;">
 
-<!-- 8 moving objects -->
-<div id="obj1" class="object"></div>
-<div id="obj2" class="object"></div>
-<div id="obj3" class="object"></div>
-<div id="obj4" class="object"></div>
-<div id="obj5" class="object"></div>
-<div id="obj6" class="object"></div>
-<div id="obj7" class="object"></div>
-<div id="obj8" class="object"></div>
+  <div style="position:relative; left:0; right:0" id="myDiv01">...</div>
 
-<!-- Buttons -->
-<div style="text-align:center; margin-top:620px;">
-  <button onclick="startAll()">Start Moving</button>
-  <button onclick="stopAll()">Stop</button>
-  <button onclick="myAuto()">Move Image</button>
-</div>
+  <button onclick="{
+    const myDiv = document.getElementById('myDiv01')
+    myDiv.style.left = '100px'
+    }">Move to 100px</button><br>
 
-<script>
-  let timers = [];
+  <button id="myButton02" onclick="{
+    const myDiv = document.getElementById('myDiv01')
+    myDiv.style.left = parseInt(myDiv.style.left) + 20 +'px'
+    }">Move Right</button><br>
 
-  // Move right and reset when reaching edge
-  function moveRight(id, speed) {
-    const el = document.getElementById(id);
-    let pos = 10;
-    timers.push(setInterval(() => {
-      pos += 5;
-      el.style.left = pos + 'px';
-      if (pos > window.innerWidth - 60) pos = 10;
-    }, speed));
-  }
-
-  // Move diagonally (bouncing off edges)
-  function moveDiagonal(id, speed) {
-    const el = document.getElementById(id);
-    let x = 10, y = 120;
-    let dx = 4, dy = 3;
-    timers.push(setInterval(() => {
-      x += dx;
-      y += dy;
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-      if (x > window.innerWidth - 60 || x < 0) dx = -dx;
-      if (y > window.innerHeight - 60 || y < 0) dy = -dy;
-    }, speed));
-  }
-
-  // Up and down bounce
-  function bounceVertical(id, speed) {
-    const el = document.getElementById(id);
-    let top = 190, dir = 1;
-    timers.push(setInterval(() => {
-      top += 4 * dir;
-      el.style.top = top + 'px';
-      if (top > 400 || top < 100) dir *= -1;
-    }, speed));
-  }
-
-  // Circular motion
-  function circleMotion(id, speed) {
-    const el = document.getElementById(id);
-    let angle = 0;
-    timers.push(setInterval(() => {
-      angle += 5;
-      const x = 200 + 100 * Math.cos(angle * Math.PI / 180);
-      const y = 260 + 100 * Math.sin(angle * Math.PI / 180);
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-    }, speed));
-  }
-
-  // Zigzag movement
-  function zigzag(id, speed) {
-    const el = document.getElementById(id);
-    let x = 10, y = 330, dx = 5;
-    timers.push(setInterval(() => {
-      x += dx;
-      y += Math.sin(x / 20) * 5;
-      el.style.left = x + 'px';
-      el.style.top = y + 'px';
-      if (x > window.innerWidth - 60 || x < 10) dx = -dx;
-    }, speed));
-  }
-
-  // Rotate in place
-  function rotate(id, speed) {
-    const el = document.getElementById(id);
-    let angle = 0;
-    timers.push(setInterval(() => {
-      angle += 10;
-      el.style.transform = `rotate(${angle}deg)`;
-    }, speed));
-  }
-
-  // Expand and shrink
-  function pulse(id, speed) {
-    const el = document.getElementById(id);
-    let scale = 1, growing = true;
-    timers.push(setInterval(() => {
-      scale += growing ? 0.05 : -0.05;
-      if (scale > 1.5 || scale < 1) growing = !growing;
-      el.style.transform = `scale(${scale})`;
-    }, speed));
-  }
-
-  // Wave motion
-  function wave(id, speed) {
-    const el = document.getElementById(id);
-    let t = 0;
-    timers.push(setInterval(() => {
-      t += 0.1;
-      const x = 10 + t * 20;
-      const y = 540 + Math.sin(t) * 40;
-      el.style.left = (x % (window.innerWidth - 50)) + 'px';
-      el.style.top = y + 'px';
-    }, speed));
-  }
-
-  // Start all animations
-  function startAll() {
-    stopAll();
-    moveRight('obj1', 50);
-    moveDiagonal('obj2', 30);
-    bounceVertical('obj3', 40);
-    circleMotion('obj4', 30);
-    zigzag('obj5', 30);
-    rotate('obj6', 40);
-    pulse('obj7', 60);
-    wave('obj8', 40);
-  }
-
-  // Stop all animations
-  function stopAll() {
-    timers.forEach(t => clearInterval(t));
-    timers = [];
-  }
-</script>
-
-</body>
-</html>
+  <b onclick="{
+    myTime01 = setInterval(myAuto, 50)
+    }">Move auto</b><br>
+    <img scr="myImage01.jpg" id="myImage01" width=40 style="position:relative; left:0; right:0">
