@@ -39,10 +39,11 @@
       margin: 20px auto;
     }
     #myImage01 {
-      position: absolute;
-      top: 700px;
+      position: relative;
       left: 0;
       width: 100px;
+      display: block;
+      margin: 10px auto;
     }
     button, b {
       cursor: pointer;
@@ -85,14 +86,11 @@
   myDiv.style.left = (parseInt(myDiv.style.left) || 0) + 20 + 'px';
 }">Move Right</button>
 
-<b onclick="startImageAuto()">Move Auto (Image)</b>
-
-<!-- Moving Image -->
-<img id="myImage01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/100px-Rotating_earth_%28large%29.gif" alt="Moving Earth">
+<!-- Static image below div -->
+<img id="myImage01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/120px-Placeholder_view_vector.svg.png" alt="Static Image">
 
 <script>
   let timers = [];
-  let myTimer01;
 
   // 8 object motions
   function moveRight(id, speed) {
@@ -203,24 +201,11 @@
   function myKeypress(event) {
     alert(`You pressed: ${event.key}`);
   }
-
-  // Image auto movement
-  function startImageAuto() {
-    const img = document.getElementById('myImage01');
-    if (myTimer01) clearInterval(myTimer01);
-    myTimer01 = setInterval(() => {
-      let left = parseInt(img.style.left) || 0;
-      left += 2;
-      if (left > window.innerWidth) left = -img.width;
-      img.style.left = left + 'px';
-    }, 20);
-  }
-
-  // Start image automatically when page loads
-  window.onload = () => {
-    startImageAuto();
-  };
 </script>
+
+</body>
+</html>
+
 
 </body>
 </html>
