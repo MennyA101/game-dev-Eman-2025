@@ -29,10 +29,32 @@
   </style>
 </head>
 
+<!-- ✅ Corrected body with working onkeypress -->
 <body onkeypress="myKeypress(event)">
+
+<!-- ✅ Your original script (cleaned up and functional) -->
+<script>
+  let myTimer01;
+
+  function myAuto() {
+    const myIm = document.getElementById('myImage01');
+    myIm.style.left = (parseInt(myIm.style.left) || 0) + 5 + 'px';
+    if (parseInt(myIm.style.left) > 600) {
+      myIm.style.left = '10px';
+    }
+  }
+
+  function myKeypress(event) {
+    alert(`You pressed: ${event.key}`);
+  }
+</script>
 
 <h1>t1a16-move-div-Eman.html</h1>
 <p>8 different types of objects move in different ways</p>
+
+<!-- Example image for myAuto() demo -->
+<img id="myImage01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/120px-Rotating_earth_%28large%29.gif"
+     style="position:absolute; top:10px; left:10px; width:80px; height:80px; border-radius:10px;">
 
 <!-- 8 moving objects -->
 <div id="obj1" class="object"></div>
@@ -48,6 +70,7 @@
 <div style="text-align:center; margin-top:620px;">
   <button onclick="startAll()">Start Moving</button>
   <button onclick="stopAll()">Stop</button>
+  <button onclick="myAuto()">Move Image</button>
 </div>
 
 <script>
@@ -168,13 +191,7 @@
     timers.forEach(t => clearInterval(t));
     timers = [];
   }
-
-  // Key press alert
-  function myKeypress(event) {
-    alert(`You pressed: ${event.key}`);
-  }
 </script>
 
 </body>
 </html>
-
