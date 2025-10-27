@@ -2,50 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TIA03 - Lists, Tables & Moving Div by Eman</title>
+  <title>t1a16-move-div-Eman.html</title>
   <style>
     body {
+      background-color: #eef2ff;
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      margin: 20px;
-      line-height: 1.5;
-    }
-    h1, h2, h5 {
       text-align: center;
     }
-    hr {
-      border: 2px solid #333;
-      margin: 20px 0;
-    }
-    table {
-      border-collapse: collapse;
-      margin: 10px auto;
-    }
-    td, th {
-      border: 1px solid black;
-      padding: 8px 15px;
-      text-align: center;
-    }
-    img {
+    #myDiv01 {
+      position: relative;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 50px;
+      background-color: lightblue;
+      margin: 20px auto;
+      line-height: 50px;
       border-radius: 10px;
     }
     #myImage01 {
       position: relative;
       left: 0;
       top: 0;
-      width: 100px;
-      height: 100px;
-    }
-    .center {
-      text-align: center;
+      width: 80px;
+      height: 80px;
     }
   </style>
 </head>
 
-<!-- ✅ Body with working keypress event -->
 <body onkeypress="myKeypress(event)">
 
-<!-- ✅ Script section (cleaned and corrected) -->
 <script>
   let myTimer01;
 
@@ -62,130 +48,27 @@
   }
 </script>
 
-<!-- ✅ Combined header -->
 <h1 align="center">t1a16-move-div-Eman.html</h1>
-<p class="center">Have 8 different types of objects move in different ways.</p>
+<p>Have 8 different types of objects move in different ways</p>
 
-<div id="myDiv01" style="position:relative; left:0; top:0;">...</div>
+<div id="myDiv01">...</div>
 
-<div class="center">
-  <button onclick="{
-    const myDiv = document.getElementById('myDiv01');
-    myDiv.style.left = '100px';
-  }">Move to 100px</button><br><br>
+<button onclick="{
+  const myDiv = document.getElementById('myDiv01');
+  myDiv.style.left = '100px';
+}">Move to 100px</button><br><br>
 
-  <button id="myButton02" onclick="{
-    const myDiv = document.getElementById('myDiv01');
-    myDiv.style.left = (parseInt(myDiv.style.left) || 0) + 20 + 'px';
-  }">Move Right</button><br><br>
+<button id="myButton02" onclick="{
+  const myDiv = document.getElementById('myDiv01');
+  myDiv.style.left = (parseInt(myDiv.style.left) || 0) + 20 + 'px';
+}">Move Right</button><br><br>
 
-  <b style='cursor:pointer; color:blue;' onclick="{
-    myTimer01 = setInterval(myAuto, 50);
-  }">Move Auto</b><br><br>
+<b style='cursor:pointer; color:blue;' onclick="{
+  myTimer01 = setInterval(myAuto, 50);
+}">Move Auto</b><br><br>
 
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/120px-Rotating_earth_%28large%29.gif"
-       id="myImage01" alt="Moving Image">
-</div>
-
-<hr>
-
-<!-- ✅ Lists and Tables section -->
-<h5>Version 0.0.2</h5>
-<h1>TIA03 - Lists and Tables by Eman</h1>
-
-<hr>
-
-<h2>Lists</h2>
-
-<p><b>Ordered list of favourite foods:</b></p>
-<ol>
-  <li>KD</li>
-  <li>Steak</li>
-  <li>Pizza</li>
-  <li>Burger</li>
-  <li>Pasta</li>
-</ol>
-
-<p><b>Unordered list of countries:</b></p>
-<ul>
-  <li>Canada</li>
-  <li>France</li>
-  <li>Japan</li>
-  <li>Brazil</li>
-  <li>Australia</li>
-</ul>
-
-<b>Assignment:</b> Create a list inside another list:
-<ul>
-  <li>Fruits
-    <ul>
-      <li>Apple</li>
-      <li>Banana</li>
-      <li>Grapes</li>
-    </ul>
-  </li>
-  <li>Vegetables
-    <ul>
-      <li>Carrot</li>
-      <li>Broccoli</li>
-      <li>Spinach</li>
-    </ul>
-  </li>
-</ul>
-
-<hr>
-
-<h2>Tables</h2>
-
-<table>
-  <tr><th>Column 1</th><th>Column 2</th><th>Column 3</th><th>Column 4</th></tr>
-  <tr><td>A</td><td>B</td><td>C</td><td>D</td></tr>
-  <tr><td>1</td><td>2</td><td>3</td><td>4</td></tr>
-  <tr><td>X</td><td>Y</td><td>Z</td><td>W</td></tr>
-</table>
-
-<b>Assignment:</b> Make a link and image table (border = 0)<br><br>
-
-<table border="0">
-  <tr>
-    <td><a href="https://www.google.com" target="_blank">Google</a></td>
-    <td><a href="https://www.wikipedia.org" target="_blank">Wikipedia</a></td>
-  </tr>
-  <tr>
-    <td><img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="80"></td>
-    <td><img src="https://upload.wikimedia.org/wikipedia/commons/4/47/HTML5_logo_and_wordmark.svg" width="80"></td>
-  </tr>
-</table>
-
-<hr>
-
-<h2>Advanced</h2>
-<div class="center">
-  <img id="myImage01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/200px-Rotating_earth_%28large%29.gif" alt="Moving Image"><br><br>
-
-  <input type="button" value="Go Left" onclick="{
-     let img = document.getElementById('myImage01');
-     let currentLeft = parseInt(img.style.left) || 0;
-     img.style.left = (currentLeft - 10) + 'px';
-     document.getElementById('myDiv01').innerHTML = 'The image moved left by 10px';
-  }">
-
-  <input type="button" value="Go Right" onclick="{
-     let img = document.getElementById('myImage01');
-     let currentLeft = parseInt(img.style.left) || 0;
-     img.style.left = (currentLeft + 10) + 'px';
-     document.getElementById('myDiv01').innerHTML = 'The image moved right by 10px';
-  }">
-
-  <div id="myDiv01">...</div>
-</div>
-
-<hr>
-
-<footer class="center">
-  <p>Created by Eman — HTML Practice Project</p>
-</footer>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Rotating_earth_%28large%29.gif/100px-Rotating_earth_%28large%29.gif"
+     id="myImage01" alt="Moving Image">
 
 </body>
 </html>
-
