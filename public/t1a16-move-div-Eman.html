@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>t1a16-move-div-Eman.html</title>
@@ -7,6 +7,10 @@
     body {
       background-color: #eef2ff;
       overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    h1, p {
+      text-align: center;
     }
     .object {
       position: absolute;
@@ -27,9 +31,10 @@
 
 <body onkeypress="myKeypress(event)">
 
-<h1 align="center">t1a16-move-div-Eman.html</h1>
-<p align="center">8 different types of objects move in different ways</p>
+<h1>t1a16-move-div-Eman.html</h1>
+<p>8 different types of objects move in different ways</p>
 
+<!-- 8 moving objects -->
 <div id="obj1" class="object"></div>
 <div id="obj2" class="object"></div>
 <div id="obj3" class="object"></div>
@@ -39,6 +44,7 @@
 <div id="obj7" class="object"></div>
 <div id="obj8" class="object"></div>
 
+<!-- Buttons -->
 <div style="text-align:center; margin-top:620px;">
   <button onclick="startAll()">Start Moving</button>
   <button onclick="stopAll()">Stop</button>
@@ -47,7 +53,7 @@
 <script>
   let timers = [];
 
-  // move right and reset when reaching edge
+  // Move right and reset when reaching edge
   function moveRight(id, speed) {
     const el = document.getElementById(id);
     let pos = 10;
@@ -58,13 +64,14 @@
     }, speed));
   }
 
-  // move diagonally
+  // Move diagonally (bouncing off edges)
   function moveDiagonal(id, speed) {
     const el = document.getElementById(id);
     let x = 10, y = 120;
     let dx = 4, dy = 3;
     timers.push(setInterval(() => {
-      x += dx; y += dy;
+      x += dx;
+      y += dy;
       el.style.left = x + 'px';
       el.style.top = y + 'px';
       if (x > window.innerWidth - 60 || x < 0) dx = -dx;
@@ -72,7 +79,7 @@
     }, speed));
   }
 
-  // up and down
+  // Up and down bounce
   function bounceVertical(id, speed) {
     const el = document.getElementById(id);
     let top = 190, dir = 1;
@@ -83,7 +90,7 @@
     }, speed));
   }
 
-  // circular motion
+  // Circular motion
   function circleMotion(id, speed) {
     const el = document.getElementById(id);
     let angle = 0;
@@ -96,7 +103,7 @@
     }, speed));
   }
 
-  // zigzag
+  // Zigzag movement
   function zigzag(id, speed) {
     const el = document.getElementById(id);
     let x = 10, y = 330, dx = 5;
@@ -109,7 +116,7 @@
     }, speed));
   }
 
-  // rotate in place
+  // Rotate in place
   function rotate(id, speed) {
     const el = document.getElementById(id);
     let angle = 0;
@@ -119,7 +126,7 @@
     }, speed));
   }
 
-  // expand and shrink
+  // Expand and shrink
   function pulse(id, speed) {
     const el = document.getElementById(id);
     let scale = 1, growing = true;
@@ -130,7 +137,7 @@
     }, speed));
   }
 
-  // wave motion
+  // Wave motion
   function wave(id, speed) {
     const el = document.getElementById(id);
     let t = 0;
@@ -143,6 +150,7 @@
     }, speed));
   }
 
+  // Start all animations
   function startAll() {
     stopAll();
     moveRight('obj1', 50);
@@ -155,12 +163,18 @@
     wave('obj8', 40);
   }
 
+  // Stop all animations
   function stopAll() {
     timers.forEach(t => clearInterval(t));
     timers = [];
   }
 
+  // Key press alert
   function myKeypress(event) {
     alert(`You pressed: ${event.key}`);
   }
+</script>
+
+</body>
+</html>
 
