@@ -6,8 +6,8 @@
   <style>
     body {
       background-color: #eef2ff;
-      overflow: hidden;
       font-family: Arial, sans-serif;
+      height: 2000px; /* allows scrolling */
     }
     h1, p, h2 {
       text-align: center;
@@ -29,25 +29,35 @@
     #myDiv01 {
       position: relative;
       left: 0;
-      top: 650px;
-      width: 120px;
-      height: 40px;
+      top: 700px;
+      width: 150px;
+      height: 150px;
       background-color: lightblue;
       text-align: center;
-      line-height: 40px;
       border-radius: 10px;
       margin: 20px auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    #myDiv01 img {
+      width: 100px;
+      height: 100px;
+      margin-top: 20px;
+      border-radius: 10px;
     }
     #myImage01 {
       position: relative;
       left: 0;
-      width: 100px;
+      width: 120px;
       display: block;
-      margin: 10px auto;
+      margin: 40px auto;
     }
     button, b {
       cursor: pointer;
       margin: 5px;
+    }
+    .controls {
+      text-align: center;
+      margin-top: 630px;
     }
   </style>
 </head>
@@ -67,27 +77,37 @@
 <div id="obj7" class="object"></div>
 <div id="obj8" class="object"></div>
 
-<!-- Buttons for objects -->
-<div style="text-align:center; margin-top:620px;">
+<!-- Buttons for animation -->
+<div class="controls">
   <button onclick="startAll()">Start Moving</button>
   <button onclick="stopAll()">Stop</button>
 </div>
 
 <!-- Move Div Section -->
 <h2>Move Div Section</h2>
-<div id="myDiv01">...</div>
-<button onclick="{
-  const myDiv = document.getElementById('myDiv01');
-  myDiv.style.left = '100px';
-}">Move to 100px</button>
+<div id="myDiv01">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/100px-Placeholder_view_vector.svg.png" alt="Div Image">
+</div>
 
-<button onclick="{
-  const myDiv = document.getElementById('myDiv01');
-  myDiv.style.left = (parseInt(myDiv.style.left) || 0) + 20 + 'px';
-}">Move Right</button>
+<div style="text-align:center;">
+  <button onclick="{
+    const myDiv = document.getElementById('myDiv01');
+    myDiv.style.left = '100px';
+  }">Move to 100px</button>
 
-<!-- Static image below div -->
-<img id="myImage01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/120px-Placeholder_view_vector.svg.png" alt="Static Image">
+  <button onclick="{
+    const myDiv = document.getElementById('myDiv01');
+    myDiv.style.left = (parseInt(myDiv.style.left) || 0) + 20 + 'px';
+  }">Move Right</button>
+</div>
+
+<!-- Bottom image -->
+<img id="myImage01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Blue_square.svg/120px-Blue_square.svg.png" alt="Bottom Image">
+
+<div style="text-align:center;">
+  <button onclick="moveImageRight()">Move Image Right</button>
+  <button onclick="resetImage()">Reset Image</button>
+</div>
 
 <script>
   let timers = [];
@@ -196,6 +216,18 @@
   function stopAll() {
     timers.forEach(t => clearInterval(t));
     timers = [];
+  }
+
+  // Image control
+  function moveImageRight() {
+    const img = document.getElementById('myImage01');
+    let currentLeft = parseInt(img.style.left) || 0;
+    img.style.left = (currentLeft + 20) + 'px';
+  }
+
+  function resetImage() {
+    const img = document.getElementById('myImage01');
+    img.style.left = '0px';
   }
 
   function myKeypress(event) {
