@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Crown Path Follower</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to ensure the canvas takes up the whole available space within its container */
+        body {
+            background-color: #0e1217; /* Very dark background */
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #animationCanvas {
+            background-color: #0e1217;
+            touch-action: none; /* Prevents unwanted mobile scrolling/zooming */
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div id="container" class="w-full max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl rounded-xl shadow-2xl overflow-hidden bg-gray-900 border border-yellow-500/30">
+        <h1 class="text-center text-3xl font-bold p-4 text-yellow-400">2D Regal Crown Path</h1>
+        <canvas id="animationCanvas"></canvas>
+    </div>
+
+    <script>
+        // Global variables for Firebase setup (required even if not used)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        const canvas = document.getElementById('animationCanvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('container');
+
+        // Animation constants
+        const NUM_PEAKS = 5;       // Number of peaks on the crown
+        const PATH_SPEED = 1.2;    // Speed multiplier for dot travel (Increased for faster movement)
+        const LOOP_RADIUS = 0;     // Set to 0 to eliminate the perpendicular looping motion
+        const LOOP_SPEED = 4;      // Speed of the dot's loop (now unused)
+        const DOT_RADIUS = 3;
+
+        // Dynamic variables updated on resize
+        let center;
+        let crownWidth = 300;
+        let crownHeight = 150;
+        let crownPath = [];
+        let totalPathLength = 0;
+        let dotTrail = [];
+
+        let time = 0;
+
+        /**
+         * Resizes the canvas to fit the container and updates the center point.
+         */
+        function resizeCanvas() {
+            // Use the container's width and set a fixed aspect ratio for visual appeal
+            canvas.width = container.clientWidth;
+            canvas.height = Math.min(container.clientWidth * 0.9, 600); // Max height of 600px
+
+            center = { x: canvas.width / 2, y: canvas.height / 2 };
+
+            // Calculate dynamic size based on canvas width to ensure responsiveness
+            const scaleFactor = Math.min(canvas.width, canvas.height) / 450;
+            crownWidth = 300 * scaleFactor;
+            crownHeight = 150 * scaleFactor;
+
+            // Regenerate the path based on new dimensions
+            generate2DCrownPath();
+        }
+        
+        /**
+         * Generates the static 2D polyline path for the crown shape.
+         */
+        function generate2DCrownPath() {
+            crownPath = [];
+            totalPathLength = 0;
+
+            const halfWidth = crownWidth / 2;
+            // Peaks will be 1/3 the height of the crown above the base line
+            const peakHeight = crownHeight / 3; 
+            const baseY = center.y + crownHeight / 2;
+            const topY = baseY - crownHeight;
+            const segmentWidth = crownWidth / (NUM_PEAKS * 2);
+
+            // 1. Define the polyline points (Start at Bottom Left)
+            // P0: Bottom Left Corner
+            crownPath.push({ x: center.x - halfWidth, y: baseY });
+
+            // P1 to P(N*2+1): Peaks and Valleys
+            for (let i = 0; i <= NUM_PEAKS * 2; i++) {
+                const currentX = center.x - halfWidth + i * segmentWidth;
+                const y = (i % 2 === 0) ? topY : (baseY - peakHeight); // Even index = peak, Odd index = valley
+                crownPath.push({ x: currentX, y: y });
+            }
+
+            // P(N*2+2): Bottom Right Corner
+            crownPath.push({ x: center.x + halfWidth, y: baseY });
+            
+            // P(N*2+3): Close the loop back to the start (Bottom Left)
+            crownPath.push({ x: center.x - halfWidth, y: baseY });
+
+            // 2. Calculate Segment Lengths for path traversal
+            for (let i = 0; i < crownPath.length - 1; i++) {
+                const p1 = crownPath[i];
+                const p2 = crownPath[i + 1];
+                const dx = p2.x - p1.x;
+                const dy = p2.y - p1.y;
+                
+                // Store the length to the next point and update total length
+                crownPath[i].lengthToNext = Math.sqrt(dx * dx + dy * dy);
+                totalPathLength += crownPath[i].lengthToNext;
+            }
+        }
+
+
+        /**
+         * Draws the static outline and fill of the 2D crown.
+         */
+        function drawCrownOutline() {
+            if (crownPath.length === 0) return;
+
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#FFD700'; // Solid gold outline
+            ctx.fillStyle = '#FFD70015'; // Slightly transparent gold fill
+
+            // Start at the first point (Bottom Left)
+            ctx.moveTo(crownPath[0].x, crownPath[0].y);
+
+            // Draw lines connecting all points
+            for (let i = 1; i < crownPath.length; i++) {
+                ctx.lineTo(crownPath[i].x, crownPath[i].y);
+            }
+            
+            ctx.closePath();
+            ctx.fill(); // Fill the crown shape
+            ctx.stroke(); // Draw the outline
+        }
+
+
+        /**
+         * Gets the position and normal vector along the 2D crown polyline based on a distance.
+         * We only use the position (x, y) now, but keep the function signature the same for safety.
+         * @param {number} normalizedDistance - Distance traveled (clamped to 0 to totalPathLength).
+         * @returns {{x: number, y: number, nx: number, ny: number}} The coordinates and normal vector.
+         */
+        function getDotPositionOnPath(normalizedDistance) {
+            let currentDist = 0;
+            
+            // Loop through all segments
+            for (let i = 0; i < crownPath.length - 1; i++) {
+                const segmentLength = crownPath[i].lengthToNext;
+                
+                if (normalizedDistance < currentDist + segmentLength) {
+                    // The dot is on this segment (from i to i+1)
+                    const p1 = crownPath[i];
+                    const p2 = crownPath[i + 1];
+                    
+                    // Calculate distance into this segment
+                    const distInSegment = normalizedDistance - currentDist;
+                    
+                    // Calculate interpolation factor (t)
+                    const t = distInSegment / segmentLength;
+                    
+                    // Linear interpolation (LERP) for position
+                    const x = p1.x + (p2.x - p1.x) * t;
+                    const y = p1.y + (p2.y - p1.y) * t;
+                    
+                    // Normal calculation (unused, but included for completeness)
+                    const dx = p2.x - p1.x;
+                    const dy = p2.y - p1.y;
+                    const normalX = -dy;
+                    const normalY = dx;
+                    const length = Math.sqrt(normalX * normalX + normalY * normalY);
+                    let nx = 0, ny = 0;
+                    if (length > 0) {
+                        nx = normalX / length;
+                        ny = normalY / length;
+                    }
+                    
+                    return { x, y, nx, ny };
+                }
+                
+                currentDist += segmentLength;
+            }
+            
+            // Fallback: return the last point
+            const lastPoint = crownPath[crownPath.length - 1];
+            return { x: lastPoint.x, y: lastPoint.y, nx: 0, ny: 0 };
+        }
+
+
+        /**
+         * Calculates and draws the moving particle.
+         */
+        function drawMovingDot() {
+            if (totalPathLength === 0) return;
+
+            // The total path traveled, wrapped around the total length
+            // We use a large multiplier (50) to make the dot travel a full circuit reasonably quickly
+            const totalTraveledDistance = (time * PATH_SPEED * 50) % totalPathLength;
+
+            // 1. Get the position along the crown path
+            // We destructure to only get the path position (px, py)
+            const { x: px, y: py } = getDotPositionOnPath(totalTraveledDistance);
+
+            // 2. The final position is just the position on the path (no loop offset)
+            const finalX = px;
+            const finalY = py;
+
+            // 3. Draw the dot (a bright, solid circle)
+            ctx.beginPath();
+            ctx.arc(finalX, finalY, DOT_RADIUS, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFD700'; // Solid gold color
+            ctx.shadowColor = '#FFD700';
+            ctx.shadowBlur = 10;
+            ctx.fill();
+
+            // Store position for trail effect
+            dotTrail.push({x: finalX, y: finalY});
+            if (dotTrail.length > 50) { // Limit trail length
+                dotTrail.shift();
+            }
+        }
+
+        /**
+         * Draws the particle trail for a smooth, comet-like effect.
+         */
+        function drawTrail() {
+            ctx.shadowBlur = 0; // Turn off shadow for the trail
+            for (let i = 0; i < dotTrail.length; i++) {
+                const p = dotTrail[i];
+                const opacity = i / dotTrail.length; // Fade out older particles
+                const size = DOT_RADIUS * (1 - (i / dotTrail.length) * 0.5); // Shrink older particles
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 215, 0, ${opacity * 0.5})`; // Gold with varying opacity
+                ctx.fill();
+            }
+        }
+
+
+        /**
+         * The main animation loop.
+         * @param {number} t - The timestamp provided by requestAnimationFrame.
+         */
+        function animate(t) {
+            requestAnimationFrame(animate);
+
+            // Update time
+            time = t / 1000;
+
+            // Clear the canvas, but slightly fade the previous frame to create a persistent glow
+            ctx.fillStyle = 'rgba(14, 18, 23, 0.2)'; // Dark background with low opacity for glow trail
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw the static crown shape (fill and outline)
+            drawCrownOutline();
+
+            // 2. Draw the particle trail
+            drawTrail();
+
+            // 3. Draw the moving dot
+            drawMovingDot();
+        }
+
+        // Initialize and start the animation
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() {
+            resizeCanvas();
+            animate(0);
+        }
+
+    </script>
+
+</body>
+</html>
