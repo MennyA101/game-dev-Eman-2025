@@ -1,7 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>t1a16-move-div-Eman.html</title>
-  <style>
-    body {
+
+  <script>
+    let text = "";
+
+    // 1. For loop - counts from 1 to 5
+    text += "<b>For Loop:</b><br>";
+    for (let i = 1; i <= 5; i++) {
+      text += "Number " + i + "<br>";
+    }
+
+    // 2. While loop - counts down from 5 to 1
+    text += "<br><b>While Loop:</b><br>";
+    let j = 5;
+    while (j > 0) {
+      text += "Countdown " + j + "<br>";
+      j--;
+    }
+
+    // 3. Do...while loop - runs at least once
+    text += "<br><b>Do...While Loop:</b><br>";
+    let k = 1;
+    do {
+      text += "This is loop #" + k + "<br>";
+      k++;
+    } while (k <= 3);
+
+    // 4. For...of loop - loops through an array
+    text += "<br><b>For...Of Loop (array):</b><br>";
+    let fruits = ["Apple", "Banana", "Cherry", "Mango"];
+    for (let fruit of fruits) {
+      text += fruit + "<br>";
+    }
+
+    // 5. For...in loop - loops through object properties
+    text += "<br><b>For...In Loop (object):</b><br>";
+    let person = { name: "Eman", age: 16, city: "Mission" };
+    for (let key in person) {
+      text += key + ": " + person[key] + "<br>";
+    }
