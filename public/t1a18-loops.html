@@ -1,39 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>JavaScript Loops — One‑Page Demo</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}
+body{max-width:980px;margin:28px auto;padding:18px;background:#fbfbff;color:#111}
+h1{font-size:1.6rem;margin-bottom:6px}
+p.lead{margin-top:0;color:#333}
+.card{background:white;border-radius:10px;box-shadow:0 6px 22px rgba(20,20,60,0.06);padding:14px;margin:14px 0}
+.row{display:grid;grid-template-columns:1fr 320px;gap:12px}
+pre{background:#0f1724;color:#dff;overflow:auto;padding:10px;border-radius:6px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:13px}
+button{padding:8px 10px;border-radius:8px;border:0;background:#2563eb;color:white;cursor:pointer}
+button.secondary{background:#10b981}
+.output{background:#0b1220;color:#e8f2ff;padding:12px;border-radius:8px;min-height:120px;white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+small.note{color:#555}
+code.tag{background:#eef2ff;padding:2px 6px;border-radius:6px}
+footer{margin-top:22px;color:#666;font-size:13px}
+</style>
+</head>
+<body>
+<h1>JavaScript Loops — One‑Page Demo</h1>
+<p class="lead">Interactive examples of common JavaScript loops. Click the buttons on the right to run each example and see the output.</p>
 
-  <script>
-    let text = "";
 
-    // 1. For loop - counts from 1 to 5
-    text += "<b>For Loop:</b><br>";
-    for (let i = 1; i <= 5; i++) {
-      text += "Number " + i + "<br>";
-    }
+<div class="card">
+<strong>How to use</strong>
+<p class="note">Click any "Run" button to execute that loop. The code shown is the exact code that runs (browser console & this page).</p>
+</div>
 
-    // 2. While loop - counts down from 5 to 1
-    text += "<br><b>While Loop:</b><br>";
-    let j = 5;
-    while (j > 0) {
-      text += "Countdown " + j + "<br>";
-      j--;
-    }
 
-    // 3. Do...while loop - runs at least once
-    text += "<br><b>Do...While Loop:</b><br>";
-    let k = 1;
-    do {
-      text += "This is loop #" + k + "<br>";
-      k++;
-    } while (k <= 3);
+<div class="card">
+<div class="row">
+<div>
+<h3>1) <code class="tag">for</code> loop</h3>
+<pre id="code-for">// standard for loop
+for (let i = 0; i < 5; i++) {
+output.push(`for: ${i}`);
+}</pre>
 
-    // 4. For...of loop - loops through an array
-    text += "<br><b>For...Of Loop (array):</b><br>";
-    let fruits = ["Apple", "Banana", "Cherry", "Mango"];
-    for (let fruit of fruits) {
-      text += fruit + "<br>";
-    }
 
-    // 5. For...in loop - loops through object properties
-    text += "<br><b>For...In Loop (object):</b><br>";
-    let person = { name: "Eman", age: 16, city: "Mission" };
-    for (let key in person) {
-      text += key + ": " + person[key] + "<br>";
-    }
+<h3>2) <code class="tag">while</code> loop</h3>
+<pre id="code-while">// while loop
+let j = 0;
+while (j < 5) {
+output.push(`while: ${j}`);
+j++;
+}</pre>
+
+
+<h3>3) <code class="tag">do...while</code> loop</h3>
+<pre id="code-do">// do..while - runs at least once
+let k = 0;
+do {
+output.push(`do...while: ${k}`);
+k++;
+} while (k < 3);</pre>
+
+
+<h3>4) <code class="tag">for...in</code> loop</h3>
+<pre id="code-for-in">// for...in iterates object keys
+const obj = {a:1, b:2, c:3};
+for (const key in obj) {
+if (Object.hasOwn(obj, key)) output.push(`for...in: ${key} -> ${obj[key]}`);
+}</pre>
+
+
+<h3>5) <code class="tag">for...of</code> loop</h3>
+<pre id="code-for-of">// for...of iterates iterable values
+const arr = ['a','b','c'];
+for (const val of arr) {
+output.push(`for...of: ${val}`);
+}</pre>
+
+
+<h3>6) Array <code class="tag">forEach</code> (callback)</h3>
+<pre id="code-foreach">// Array.prototype.forEach
+[10,20,30].forEach((v, idx) => output.push(`forEach: idx=${idx} value=${v}`));</pre>
+
+
+<h3>7) Labeled & nested loops (with break/continue)</h3>
+<pre id="code-labelled">outer: for (let a=1; a<=3; a++) {
+for (let b=1; b<=3; b++) {
+if (a * b === 4) break outer; // jump out of both loops
+if (b === 2) continue; // skip this inner iteration
+output.push(`labelled: ${a},${b}`);
+}
+}</pre>
+
+
+</div>
+
+
+<div>
+<h3>Run examples</h3>
+<div class="controls">
+<button onclick="runExample('for')">Run for</button>
+<button onclick="runExample('while')">Run while</button>
+<button onclick="runExample('do')">Run do...while</button>
+<button onclick="runExample('for-in')">Run for...in</button>
+<button onclick="runExample('for-of')">Run for...of</button>
+<button onclick="runExample('forEach')">Run forEach</button>
+</html>
