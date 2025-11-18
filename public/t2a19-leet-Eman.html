@@ -1,0 +1,83 @@
+<html>
+<head>
+  <title>t2a20-leet-cohen.html</title>
+  <style>
+    body {
+      color: blue;
+      background-color: rgb(128, 255, 0);
+      transition: cubic-bezier(0.215, 0.610, 0.355, 1);
+    }
+    
+    h1 {
+      color: rebeccapurple;
+      border: 5px black;
+    }
+  </style>
+</head>
+<body>
+  <h1 align=center>t2a20-leet-Eman.html</h1><br>
+
+  <p><strong>Prompt:</strong>Give me a beginner leet code question for me to solve.</p>
+
+<p><strong>Question:</strong>  
+    Given an array of integers <code>nums</code>, return the **largest number** in the array.
+  </p><br>
+
+  <h2>My Answer</h2>
+
+  <pre><code>
+function findMax(nums) {
+  let max = nums[0];
+
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] > max) {
+      max = nums[i];
+    }
+  }
+  return max;
+}
+  </code></pre><br>
+
+  <h2>ChatGPT Answer</h2>
+  <pre><code>
+function findMax(nums) {
+  return Math.max(...nums);
+}
+  </code></pre><br>
+
+  <h2>Tester</h2><br>
+
+  <p>Enter list of comma-separated values</p>
+  <input id="numInput" type="text" value="3, 9, 1, 6, 5"><br><br>
+
+  <button id="numSubmit">Submit</button><br><br>
+
+  <div id="resultDiv">...</div>
+
+<script>
+let mySubmitButton = document.getElementById("numSubmit");
+let resultDiv = document.getElementById("resultDiv");
+
+function findMax(nums) {
+  let max = nums[0];
+
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] > max) {
+      max = nums[i];
+    }
+  }
+  return max;
+}
+
+mySubmitButton.addEventListener("click", function() {
+  let rawNums = document.getElementById("numInput").value;
+  let numArray = rawNums.split(",").map(Number);
+
+  const result = findMax(numArray);
+  
+  resultDiv.textContent = "Max number = " + result;
+});
+</script>
+
+</body>
+</html>
