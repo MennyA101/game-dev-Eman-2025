@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>t2a22-json-eman.html</title>
+</head>
+<body>
+
+  <h1 align=center>t2a22-json-eman.html</h1>
+
+  <script>
+    async function fetchData(url){
+      const myDiv01 = document.getElementById('myDiv01');
+      const myDiv02 = document.getElementById('myDiv02');
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log(data);
+
+      const myJson = JSON.stringify(data, null, 2);
+      document.getElementById('myDiv01').innerHTML = `<pre>${myJson}</pre>`;
+      if (data.image){
+        myDiv01.innerHTML += `<img src="${data.image}"" alt="Random Image" style="max-width: 100%; height: auto;">`;
+        myDiv02.innerHTML = `...`;
+      }
+      else if (data.setup){
+        myDiv01.innerHTML = `<pre>${myJson}</pre>`;
+        myDiv01.innerHTML += `${data.setup}`;
+        myDiv02.innerHTML = `${data.punchline}`;
+      }
+      else if (data.fact) {
+        myDiv01.innerHTML = `<pre>${myJson}</pre>`;
+        myDiv01.innerHTML += `${data.fact}`;
+        myDiv02.innerHTML = `...`
+      }
+      else if (data.links) {
+        myDiv01.innerHTML = `<pre>${myJson}</pre>`;
+        myDiv01.innerHTML += `<img src="${data.links.patch.small}"" alt="Random Image" style="max-width: 100%; height: auto;">`;
+        const videoID = data.links.youtube_id;
+        const embedUrl = `https://www.youtube.com/embed/${videoID}`;
+        myDiv02.innerHTML = `
+          <iframe width="560" height="315"
+            src="${embedUrl}?start=12613"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        `;
+      }
+      
+
+    }
+
+  </script>
+  
+  <select id="mySelect01" size="1" onchange="fetchData(this.value)">
+    <option ></option>
+    <option value="https://randomfox.ca/floof/">randomFox</option>
+    <option value="https://official-joke-api.appspot.com/random_joke">randomJoke</option>
+    <option value="https://catfact.ninja/fact">randomCatFact</option>
+    <option value="https://api.spacexdata.com/v4/launches/latest">spaceX</option>
+    <option value="https://bcferriesapi.ca/v2/">BC Ferries</option>
+    <option value="https://api.adsb.lol/v2/point/49.1934/123.1751/50">Planes</option>
+  </select><br><br>
+
+  <div id="myDiv01">....</div>
+  <div id="myDiv02">....</div>
+</body>
+</html>
