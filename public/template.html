@@ -1,0 +1,83 @@
+<h1 align=center>T2A25 Flappy Bird by Eman</h1>
+
+<div id="myBird" style="position:absolute; left:50; top:300; width:40; height:30; background-color:yellow; border:solid 1px black;">Bird</div>
+
+<div id="pipeTop" style="position:absolute; left:400; top:0; width:50; height:150; background-color:green;"></div>
+<div id="pipeBottom" style="position:absolute; left:400; top:350; width:50; height:250; background-color:green;"></div>
+
+<div id="myScore" style="position:absolute; left:10; top:10; font-size:20px;">Score: 0</div>
+
+<input type=button value="Jump (Space)" onclick="{
+   myVelocity = -8;
+}">
+
+<input type=button value="Reset" onclick="{
+   location.reload();
+}">
+
+<script>
+   // Global Variables
+   let myGravity = 0.5;
+   let myVelocity = 0;
+   let myScore = 0;
+   let myPipeSpeed = 5;
+
+   // The Main Game Timer (standard for your template)
+   let myTimer = setInterval(function(){
+      
+      // 1. Apply Gravity to Bird
+      myVelocity += myGravity;
+      document.getElementById('myBird').style.top = parseInt(document.getElementById('myBird').style.top) + myVelocity + 'px';
+
+      // 2. Move Pipes
+      let pipeX = parseInt(document.getElementById('pipeTop').style.left);
+      pipeX -= myPipeSpeed;
+      
+      if (pipeX < -50) {
+         pipeX = 500; // Reset pipe to right side
+         myScore++;
+         document.getElementById('myScore').innerHTML = 'Score: ' + myScore;
+         
+         // Randomize pipe heights
+         let randomHeight = Math.floor(Math.random() * 200) + 50;
+         document.getElementById('pipeTop').style.height = randomHeight + 'px';
+         document.getElementById('pipeBottom').style.top = (randomHeight + 150) + 'px';
+      }
+      
+      document.getElementById('pipeTop').style.left = pipeX + 'px';
+      document.getElementById('pipeBottom').style.left = pipeX + 'px';
+
+      // 3. Check for Hits (Collision)
+      if (myCheckHit('myBird', 'pipeTop') || myCheckHit('myBird', 'pipeBottom')) {
+         alert('Game Over! Score: ' + myScore);
+         location.reload();
+      }
+
+      // 4. Boundary Check
+      if (parseInt(document.getElementById('myBird').style.top) > 600) {
+         alert('You fell!');
+         location.reload();
+      }
+
+   }, 30); // Runs every 30 milliseconds
+
+   // Collision Function (standard for your template)
+   function myCheckHit(my1, my2){
+      let obj1 = document.getElementById(my1).getBoundingClientRect();
+      let obj2 = document.getElementById(my2).getBoundingClientRect();
+
+      return !(
+         obj1.top > obj2.bottom || 
+         obj1.right < obj2.left || 
+         obj1.bottom < obj2.top || 
+         obj1.left > obj2.right
+      );
+   }
+
+   // Keyboard Control
+   document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space') {
+         myVelocity = -8;
+      }
+   });
+</script>
