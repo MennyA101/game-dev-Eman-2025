@@ -14,30 +14,31 @@
   canvas {
     display: block;
     margin: auto;
-    background: #70c5ce;
   }
 
-  #gameOver {
+  #message {
     position: absolute;
     top: 40%;
     width: 100%;
     text-align: center;
     font-size: 32px;
     color: white;
-    display: none;
   }
 </style>
 </head>
 <body>
 
 <canvas id="game" width="400" height="600"></canvas>
-<div id="gameOver">Game Over<br>Press R to Restart</div>
+<div id="message">Click or Press Space to Start</div>
 
 <script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-let bird, pipes, score, gameOver, canRestart;
+let bird, pipes, score;
+let gameOver = false;
+let gameStarted = false;
+let canRestart = true;
 
 function init() {
   bird = {
@@ -52,14 +53,17 @@ function init() {
   pipes = [];
   score = 0;
   gameOver = false;
+  gameStarted = false;
   canRestart = true;
 
-  document.getElementById("gameOver").style.display = "none";
+  document.getElementById("message").innerHTML =
+    "Click or Press Space to Start";
+  document.getElementById("message").style.display = "block";
 }
 
 function createPipe() {
-  const gap = 140;
-  const topHeight = Math.random() * 250 + 50;
+  const gap = 200; // 🔥 BIGGER GAP
+  const topHeight = Math.random() * 200 + 50;
 
   pipes.push({
     x: canvas.width,
@@ -71,7 +75,7 @@ function createPipe() {
 }
 
 function update() {
-  if (gameOver) return;
+  if (!gameStarted || gameOver) return;
 
   bird.velocity += bird.gravity;
   bird.y += bird.velocity;
@@ -137,6 +141,11 @@ function loop() {
 }
 
 function flap() {
+  if (!gameStarted) {
+    gameStarted = true;
+    document.getElementById("message").style.display = "none";
+  }
+
   if (!gameOver) {
     bird.velocity = bird.jump;
   }
@@ -145,7 +154,9 @@ function flap() {
 function endGame() {
   if (gameOver) return;
   gameOver = true;
-  document.getElementById("gameOver").style.display = "block";
+  document.getElementById("message").innerHTML =
+    "Game Over<br>Press R to Restart";
+  document.getElementById("message").style.display = "block";
 }
 
 // Controls
@@ -162,10 +173,10 @@ document.addEventListener("mousedown", flap);
 
 // Pipe spawning
 setInterval(() => {
-  if (!gameOver) createPipe();
+  if (gameStarted && !gameOver) createPipe();
 }, 1500);
 
-// Start
+// Start game
 init();
 loop();
 </script>
