@@ -1,83 +1,123 @@
-<h1 align=center>T2A25 Flappy Bird by Eman</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flappy Game</title>
+<style>
+  body {
+    margin: 0;
+    background: #70c5ce;
+    overflow: hidden;
+  }
 
-<div id="myBird" style="position:absolute; left:50; top:300; width:40; height:30; background-color:yellow; border:solid 1px black;">Bird</div>
+  canvas {
+    display: block;
+    margin: auto;
+    background: #70c5ce;
+  }
 
-<div id="pipeTop" style="position:absolute; left:400; top:0; width:50; height:150; background-color:green;"></div>
-<div id="pipeBottom" style="position:absolute; left:400; top:350; width:50; height:250; background-color:green;"></div>
+  #gameOverText {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+    font-family: Arial, sans-serif;
+    color: white;
+    display: none;
+  }
+</style>
+</head>
+<body>
 
-<div id="myScore" style="position:absolute; left:10; top:10; font-size:20px;">Score: 0</div>
-
-<input type=button value="Jump (Space)" onclick="{
-   myVelocity = -8;
-}">
-
-<input type=button value="Reset" onclick="{
-   location.reload();
-}">
+<canvas id="game" width="400" height="600"></canvas>
+<div id="gameOverText">Game Over<br>Press R to Reload</div>
 
 <script>
-   // Global Variables
-   let myGravity = 0.5;
-   let myVelocity = 0;
-   let myScore = 0;
-   let myPipeSpeed = 5;
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-   // The Main Game Timer (standard for your template)
-   let myTimer = setInterval(function(){
-      
-      // 1. Apply Gravity to Bird
-      myVelocity += myGravity;
-      document.getElementById('myBird').style.top = parseInt(document.getElementById('myBird').style.top) + myVelocity + 'px';
+let bird = {
+  x: 80,
+  y: 300,
+  velocity: 0,
+  gravity: 0.6,
+  jump: -10
+};
 
-      // 2. Move Pipes
-      let pipeX = parseInt(document.getElementById('pipeTop').style.left);
-      pipeX -= myPipeSpeed;
-      
-      if (pipeX < -50) {
-         pipeX = 500; // Reset pipe to right side
-         myScore++;
-         document.getElementById('myScore').innerHTML = 'Score: ' + myScore;
-         
-         // Randomize pipe heights
-         let randomHeight = Math.floor(Math.random() * 200) + 50;
-         document.getElementById('pipeTop').style.height = randomHeight + 'px';
-         document.getElementById('pipeBottom').style.top = (randomHeight + 150) + 'px';
-      }
-      
-      document.getElementById('pipeTop').style.left = pipeX + 'px';
-      document.getElementById('pipeBottom').style.left = pipeX + 'px';
+let gameOver = false;
+let canReload = true;
 
-      // 3. Check for Hits (Collision)
-      if (myCheckHit('myBird', 'pipeTop') || myCheckHit('myBird', 'pipeBottom')) {
-         alert('Game Over! Score: ' + myScore);
-         location.reload();
-      }
+function resetGame() {
+  bird.y = 300;
+  bird.velocity = 0;
+  gameOver = false;
+  canReload = true;
+  document.getElementById("gameOverText").style.display = "none";
+  loop();
+}
 
-      // 4. Boundary Check
-      if (parseInt(document.getElementById('myBird').style.top) > 600) {
-         alert('You fell!');
-         location.reload();
-      }
+function update() {
+  if (gameOver) return;
 
-   }, 30); // Runs every 30 milliseconds
+  bird.velocity += bird.gravity;
+  bird.y += bird.velocity;
 
-   // Collision Function (standard for your template)
-   function myCheckHit(my1, my2){
-      let obj1 = document.getElementById(my1).getBoundingClientRect();
-      let obj2 = document.getElementById(my2).getBoundingClientRect();
+  if (bird.y > canvas.height - 20) {
+    bird.y = canvas.height - 20;
+    triggerGameOver();
+  }
+}
 
-      return !(
-         obj1.top > obj2.bottom || 
-         obj1.right < obj2.left || 
-         obj1.bottom < obj2.top || 
-         obj1.left > obj2.right
-      );
-   }
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-   // Keyboard Control
-   document.addEventListener('keydown', (event) => {
-      if (event.code === 'Space') {
-         myVelocity = -8;
-      }
-   });
+  ctx.fillStyle = "yellow";
+  ctx.beginPath();
+  ctx.arc(bird.x, bird.y, 15, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function loop() {
+  update();
+  draw();
+  if (!gameOver) requestAnimationFrame(loop);
+}
+
+function flap() {
+  if (!gameOver) {
+    bird.velocity = bird.jump;
+  }
+}
+
+function triggerGameOver() {
+  if (gameOver) return;
+  gameOver = true;
+  document.getElementById("gameOverText").style.display = "block";
+}
+
+// 🎮 CONTROLS
+
+// Space bar jump + reload
+document.addEventListener("keydown", (e) => {
+  if (e.code === "Space") {
+    flap();
+  }
+
+  if (e.code === "KeyR" && gameOver && canReload) {
+    canReload = false;
+    location.reload();
+  }
+});
+
+// Mouse click jump
+document.addEventListener("mousedown", () => {
+  flap();
+});
+
+// Start game
+loop();
 </script>
+
+</body>
+</html>
