@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Flappy Game</title>
+<title>Flappy Bird</title>
 <style>
   body {
     margin: 0;
-    background: #70c5ce;
     overflow: hidden;
+    background: #70c5ce;
+    font-family: Arial, sans-serif;
   }
 
   canvas {
@@ -16,13 +17,12 @@
     background: #70c5ce;
   }
 
-  #gameOverText {
+  #gameOver {
     position: absolute;
     top: 40%;
     width: 100%;
     text-align: center;
     font-size: 32px;
-    font-family: Arial, sans-serif;
     color: white;
     display: none;
   }
@@ -31,30 +31,43 @@
 <body>
 
 <canvas id="game" width="400" height="600"></canvas>
-<div id="gameOverText">Game Over<br>Press R to Reload</div>
+<div id="gameOver">Game Over<br>Press R to Restart</div>
 
 <script>
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-let bird = {
-  x: 80,
-  y: 300,
-  velocity: 0,
-  gravity: 0.6,
-  jump: -10
-};
+let bird, pipes, score, gameOver, canRestart;
 
-let gameOver = false;
-let canReload = true;
+function init() {
+  bird = {
+    x: 80,
+    y: 300,
+    radius: 15,
+    velocity: 0,
+    gravity: 0.6,
+    jump: -10
+  };
 
-function resetGame() {
-  bird.y = 300;
-  bird.velocity = 0;
+  pipes = [];
+  score = 0;
   gameOver = false;
-  canReload = true;
-  document.getElementById("gameOverText").style.display = "none";
-  loop();
+  canRestart = true;
+
+  document.getElementById("gameOver").style.display = "none";
+}
+
+function createPipe() {
+  const gap = 140;
+  const topHeight = Math.random() * 250 + 50;
+
+  pipes.push({
+    x: canvas.width,
+    width: 50,
+    top: topHeight,
+    bottom: canvas.height - topHeight - gap,
+    passed: false
+  });
 }
 
 function update() {
@@ -63,25 +76,64 @@ function update() {
   bird.velocity += bird.gravity;
   bird.y += bird.velocity;
 
-  if (bird.y > canvas.height - 20) {
-    bird.y = canvas.height - 20;
-    triggerGameOver();
+  if (bird.y + bird.radius > canvas.height || bird.y - bird.radius < 0) {
+    endGame();
+  }
+
+  for (let i = pipes.length - 1; i >= 0; i--) {
+    pipes[i].x -= 2;
+
+    if (
+      bird.x + bird.radius > pipes[i].x &&
+      bird.x - bird.radius < pipes[i].x + pipes[i].width &&
+      (bird.y - bird.radius < pipes[i].top ||
+       bird.y + bird.radius > canvas.height - pipes[i].bottom)
+    ) {
+      endGame();
+    }
+
+    if (!pipes[i].passed && pipes[i].x + pipes[i].width < bird.x) {
+      score++;
+      pipes[i].passed = true;
+    }
+
+    if (pipes[i].x + pipes[i].width < 0) {
+      pipes.splice(i, 1);
+    }
   }
 }
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Bird
   ctx.fillStyle = "yellow";
   ctx.beginPath();
-  ctx.arc(bird.x, bird.y, 15, 0, Math.PI * 2);
+  ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
   ctx.fill();
+
+  // Pipes
+  ctx.fillStyle = "green";
+  pipes.forEach(pipe => {
+    ctx.fillRect(pipe.x, 0, pipe.width, pipe.top);
+    ctx.fillRect(
+      pipe.x,
+      canvas.height - pipe.bottom,
+      pipe.width,
+      pipe.bottom
+    );
+  });
+
+  // Score
+  ctx.fillStyle = "white";
+  ctx.font = "24px Arial";
+  ctx.fillText("Score: " + score, 10, 30);
 }
 
 function loop() {
   update();
   draw();
-  if (!gameOver) requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 }
 
 function flap() {
@@ -90,34 +142,34 @@ function flap() {
   }
 }
 
-function triggerGameOver() {
+function endGame() {
   if (gameOver) return;
   gameOver = true;
-  document.getElementById("gameOverText").style.display = "block";
+  document.getElementById("gameOver").style.display = "block";
 }
 
-// 🎮 CONTROLS
+// Controls
+document.addEventListener("keydown", e => {
+  if (e.code === "Space") flap();
 
-// Space bar jump + reload
-document.addEventListener("keydown", (e) => {
-  if (e.code === "Space") {
-    flap();
-  }
-
-  if (e.code === "KeyR" && gameOver && canReload) {
-    canReload = false;
-    location.reload();
+  if (e.code === "KeyR" && gameOver && canRestart) {
+    canRestart = false;
+    init();
   }
 });
 
-// Mouse click jump
-document.addEventListener("mousedown", () => {
-  flap();
-});
+document.addEventListener("mousedown", flap);
 
-// Start game
+// Pipe spawning
+setInterval(() => {
+  if (!gameOver) createPipe();
+}, 1500);
+
+// Start
+init();
 loop();
 </script>
 
 </body>
 </html>
+
