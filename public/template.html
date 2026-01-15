@@ -1,168 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird - WASD Edition</title>
-    <style>
-        body {
-            margin: 0;
-            background-color: #70c5ce;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Courier New', Courier, monospace;
-        }
-        canvas {
-            border: 5px solid #222;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            background-color: #fff;
-        }
-        #ui {
-            position: absolute;
-            top: 20px;
-            color: white;
-            font-size: 24px;
-            text-shadow: 2px 2px #000;
-            pointer-events: none;
-            text-align: center;
-        }
-        .controls-hint {
-            font-size: 14px;
-            margin-top: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>WASD Level Navigation</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: #70c5ce;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  canvas {
+    display: block;
+    margin: 20px auto;
+    background: #4ec0ca;
+    border: 4px solid #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  }
+
+  #message {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    pointer-events: none; /* Allows clicking "through" the text */
+  }
+</style>
 </head>
 <body>
 
-    <div id="ui">
-        <div>Score: <span id="scoreVal">0</span></div>
-        <div class="controls-hint">Use W, A, S, or D to Flap</div>
-    </div>
-    <canvas id="gameCanvas"></canvas>
+<div id="message">Use WASD to reach the other side!</div>
+<canvas id="game" width="600" height="400"></canvas>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('scoreVal');
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
-        canvas.width = 400;
-        canvas.height = 600;
+let bird, pipe, gameCompleted = false;
+const keys = {};
 
-        let bird = { x: 50, y: 300, w: 30, h: 30, velocity: 0, gravity: 0.6, jump: -9 };
-        let pipes = [];
-        let pipeWidth = 60;
-        let pipeGap = 160;
-        let frameCount = 0;
-        let score = 0;
-        let gameOver = false;
+function init() {
+  // Initial bird state (Direct control, no gravity)
+  bird = {
+    x: 50,
+    y: 200,
+    radius: 15,
+    speed: 5
+  };
 
-        function createPipe() {
-            let minPipeHeight = 50;
-            let maxPipeHeight = canvas.height - pipeGap - minPipeHeight;
-            let height = Math.floor(Math.random() * (maxPipeHeight - minPipeHeight + 1)) + minPipeHeight;
-            pipes.push({ x: canvas.width, y: height, passed: false });
-        }
+  // A single stationary pipe image-like object
+  pipe = {
+    x: 400,
+    width: 60,
+    gapTop: 120,    // Where the hole starts
+    gapHeight: 160  // How big the hole is
+  };
 
-        function resetGame() {
-            bird.y = 300;
-            bird.velocity = 0;
-            pipes = [];
-            score = 0;
-            scoreElement.innerText = score;
-            frameCount = 0;
-            gameOver = false;
-            loop();
-        }
+  gameCompleted = false;
+}
 
-        function update() {
-            if (gameOver) return;
+// Event Listeners for WASD
+window.addEventListener("keydown", e => keys[e.code] = true);
+window.addEventListener("keyup", e => keys[e.code] = false);
 
-            bird.velocity += bird.gravity;
-            bird.y += bird.velocity;
+function update() {
+  if (gameCompleted) return;
 
-            if (frameCount % 100 === 0) createPipe();
+  // Movement Logic
+  if (keys["KeyW"] || keys["ArrowUp"])    bird.y -= bird.speed;
+  if (keys["KeyS"] || keys["ArrowDown"])  bird.y += bird.speed;
+  if (keys["KeyA"] || keys["ArrowLeft"])  bird.x -= bird.speed;
+  if (keys["KeyD"] || keys["ArrowRight"]) bird.x += bird.speed;
 
-            for (let i = pipes.length - 1; i >= 0; i--) {
-                pipes[i].x -= 2.5;
+  // Screen Boundaries
+  if (bird.x < bird.radius) bird.x = bird.radius;
+  if (bird.y < bird.radius) bird.y = bird.radius;
+  if (bird.y > canvas.height - bird.radius) bird.y = canvas.height - bird.radius;
 
-                // Collision
-                if (
-                    bird.x < pipes[i].x + pipeWidth &&
-                    bird.x + bird.w > pipes[i].x &&
-                    (bird.y < pipes[i].y || bird.y + bird.h > pipes[i].y + pipeGap)
-                ) {
-                    gameOver = true;
-                }
+  // Check Completion (Going past the pipe)
+  if (bird.x > pipe.x + pipe.width) {
+    gameCompleted = true;
+    document.getElementById("message").innerHTML = "Level Completed!";
+    document.getElementById("message").style.color = "#FFD700"; // Gold color
+  }
+}
 
-                if (!pipes[i].passed && bird.x > pipes[i].x + pipeWidth) {
-                    score++;
-                    scoreElement.innerText = score;
-                    pipes[i].passed = true;
-                }
+function draw() {
+  // Clear background
+  ctx.fillStyle = "#4ec0ca";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                if (pipes[i].x + pipeWidth < 0) pipes.splice(i, 1);
-            }
+  // Draw the Stationary Pipe
+  ctx.fillStyle = "#73bf2e"; // Green
+  ctx.strokeStyle = "#558022"; // Darker green border
+  ctx.lineWidth = 4;
 
-            if (bird.y + bird.h > canvas.height || bird.y < 0) {
-                gameOver = true;
-            }
+  // Top part of pipe
+  ctx.fillRect(pipe.x, 0, pipe.width, pipe.gapTop);
+  ctx.strokeRect(pipe.x, 0, pipe.width, pipe.gapTop);
+  
+  // Bottom part of pipe
+  ctx.fillRect(pipe.x, pipe.gapTop + pipe.gapHeight, pipe.width, canvas.height);
+  ctx.strokeRect(pipe.x, pipe.gapTop + pipe.gapHeight, pipe.width, canvas.height);
 
-            frameCount++;
-        }
+  // Draw the "Bird" (Player)
+  ctx.fillStyle = "yellow";
+  ctx.beginPath();
+  ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "orange";
+  ctx.stroke();
+}
 
-        function draw() {
-            ctx.fillStyle = "#70c5ce";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
 
-            // Pipes
-            ctx.fillStyle = "#2ecc71";
-            pipes.forEach(p => {
-                ctx.fillRect(p.x, 0, pipeWidth, p.y);
-                ctx.fillRect(p.x, p.y + pipeGap, pipeWidth, canvas.height);
-            });
+// Start the game
+init();
+loop();
+</script>
 
-            // Bird
-            ctx.fillStyle = "#f1c40f";
-            ctx.fillRect(bird.x, bird.y, bird.w, bird.h);
-
-            if (gameOver) {
-                ctx.fillStyle = "rgba(0,0,0,0.6)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "white";
-                ctx.font = "bold 30px Arial";
-                ctx.textAlign = "center";
-                ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
-                ctx.font = "20px Arial";
-                ctx.fillText("Press W, A, S, or D to Restart", canvas.width/2, canvas.height/2 + 40);
-            }
-        }
-
-        function loop() {
-            if (!gameOver) {
-                update();
-                draw();
-                requestAnimationFrame(loop);
-            } else {
-                draw();
-            }
-        }
-
-        // --- WASD Key Logic ---
-        window.addEventListener('keydown', (e) => {
-            const key = e.key.toLowerCase();
-            if (['w', 'a', 's', 'd'].includes(key)) {
-                if (gameOver) {
-                    resetGame();
-                } else {
-                    bird.velocity = bird.jump;
-                }
-            }
-        });
-
-        resetGame();
-    </script>
 </body>
 </html>
