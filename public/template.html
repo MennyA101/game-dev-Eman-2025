@@ -2,131 +2,162 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WASD Level Navigation</title>
+<title>Game Level 1 - With Restart</title>
 <style>
   body {
     margin: 0;
-    overflow: hidden;
-    background: #70c5ce;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #333;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
   }
 
   canvas {
+    background-color: #70c5ce;
+    border: 4px solid #000;
     display: block;
-    margin: 20px auto;
-    background: #4ec0ca;
-    border: 4px solid #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
   }
 
-  #message {
-    position: absolute;
-    top: 50%;
-    width: 100%;
+  .ui-container {
+    margin-top: 15px;
     text-align: center;
-    font-size: 40px;
+  }
+
+  #status {
+    font-size: 24px;
     font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    pointer-events: none; /* Allows clicking "through" the text */
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    height: 30px; /* Prevents layout jump */
+  }
+
+  /* Styling the Restart Button */
+  #restartBtn {
+    padding: 10px 25px;
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    background-color: #F4D03F;
+    border: 3px solid #000;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  #restartBtn:hover {
+    background-color: #fff;
+  }
+
+  #restartBtn:active {
+    transform: translateY(2px);
   }
 </style>
 </head>
 <body>
 
-<div id="message">Use WASD to reach the other side!</div>
-<canvas id="game" width="600" height="400"></canvas>
+<div id="status">Navigate through the pipe!</div>
+<canvas id="gameCanvas" width="800" height="400"></canvas>
+
+<div class="ui-container">
+  <button id="restartBtn" onclick="restartGame()">Restart Level</button>
+  <p>Use <b>WASD</b> to Move</p>
+</div>
 
 <script>
-const canvas = document.getElementById("game");
+const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const statusText = document.getElementById("status");
 
-let bird, pipe, gameCompleted = false;
+let bird, pipe, levelComplete = false;
 const keys = {};
 
 function init() {
-  // Initial bird state (Direct control, no gravity)
+  // Reset Player
   bird = {
-    x: 50,
+    x: 100,
     y: 200,
-    radius: 15,
-    speed: 5
+    w: 30,
+    h: 30,
+    speed: 4,
+    color: "#F4D03F"
   };
 
-  // A single stationary pipe image-like object
+  // Reset Pipe
   pipe = {
-    x: 400,
-    width: 60,
-    gapTop: 120,    // Where the hole starts
-    gapHeight: 160  // How big the hole is
+    x: 500,
+    w: 80,
+    gapY: 120,
+    gapH: 150,
+    color: "#2D5A27"
   };
 
-  gameCompleted = false;
+  levelComplete = false;
+  statusText.innerText = "Navigate through the pipe!";
+  statusText.style.color = "white";
 }
 
-// Event Listeners for WASD
+// Function triggered by the button
+function restartGame() {
+  init();
+}
+
 window.addEventListener("keydown", e => keys[e.code] = true);
 window.addEventListener("keyup", e => keys[e.code] = false);
 
 function update() {
-  if (gameCompleted) return;
+  if (levelComplete) return;
 
-  // Movement Logic
-  if (keys["KeyW"] || keys["ArrowUp"])    bird.y -= bird.speed;
-  if (keys["KeyS"] || keys["ArrowDown"])  bird.y += bird.speed;
-  if (keys["KeyA"] || keys["ArrowLeft"])  bird.x -= bird.speed;
-  if (keys["KeyD"] || keys["ArrowRight"]) bird.x += bird.speed;
+  if (keys["KeyW"]) bird.y -= bird.speed;
+  if (keys["KeyS"]) bird.y += bird.speed;
+  if (keys["KeyA"]) bird.x -= bird.speed;
+  if (keys["KeyD"]) bird.x += bird.speed;
 
-  // Screen Boundaries
-  if (bird.x < bird.radius) bird.x = bird.radius;
-  if (bird.y < bird.radius) bird.y = bird.radius;
-  if (bird.y > canvas.height - bird.radius) bird.y = canvas.height - bird.radius;
+  // Canvas boundaries
+  if (bird.x < 0) bird.x = 0;
+  if (bird.y < 0) bird.y = 0;
+  if (bird.y + bird.h > canvas.height) bird.y = canvas.height - bird.h;
 
-  // Check Completion (Going past the pipe)
-  if (bird.x > pipe.x + pipe.width) {
-    gameCompleted = true;
-    document.getElementById("message").innerHTML = "Level Completed!";
-    document.getElementById("message").style.color = "#FFD700"; // Gold color
+  // Completion check
+  if (bird.x > pipe.x + pipe.w) {
+    levelComplete = true;
+    statusText.innerText = "Level Completed!";
+    statusText.style.color = "#2ecc71";
   }
 }
 
 function draw() {
-  // Clear background
-  ctx.fillStyle = "#4ec0ca";
+  ctx.fillStyle = "#70c5ce";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw the Stationary Pipe
-  ctx.fillStyle = "#73bf2e"; // Green
-  ctx.strokeStyle = "#558022"; // Darker green border
-  ctx.lineWidth = 4;
+  // Draw Pipe
+  ctx.fillStyle = pipe.color;
+  ctx.fillRect(pipe.x, 0, pipe.w, pipe.gapY);
+  ctx.fillRect(pipe.x, pipe.gapY + pipe.gapH, pipe.w, canvas.height);
 
-  // Top part of pipe
-  ctx.fillRect(pipe.x, 0, pipe.width, pipe.gapTop);
-  ctx.strokeRect(pipe.x, 0, pipe.width, pipe.gapTop);
-  
-  // Bottom part of pipe
-  ctx.fillRect(pipe.x, pipe.gapTop + pipe.gapHeight, pipe.width, canvas.height);
-  ctx.strokeRect(pipe.x, pipe.gapTop + pipe.gapHeight, pipe.width, canvas.height);
+  // Draw Pipe Lips
+  ctx.fillStyle = "#1e3d1a";
+  ctx.fillRect(pipe.x - 5, pipe.gapY - 20, pipe.w + 10, 20);
+  ctx.fillRect(pipe.x - 5, pipe.gapY + pipe.gapH, pipe.w + 10, 20);
 
-  // Draw the "Bird" (Player)
-  ctx.fillStyle = "yellow";
-  ctx.beginPath();
-  ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = "orange";
-  ctx.stroke();
+  // Draw Player
+  ctx.fillStyle = bird.color;
+  ctx.fillRect(bird.x, bird.y, bird.w, bird.h);
+  ctx.fillStyle = "black";
+  ctx.fillRect(bird.x + bird.w - 8, bird.y + 6, 4, 4);
 }
 
-function loop() {
+function gameLoop() {
   update();
   draw();
-  requestAnimationFrame(loop);
+  requestAnimationFrame(gameLoop);
 }
 
-// Start the game
 init();
-loop();
+gameLoop();
 </script>
 
 </body>
