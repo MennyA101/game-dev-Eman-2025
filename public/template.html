@@ -1,164 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Game Level 1 - With Restart</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #333;
-    font-family: 'Courier New', Courier, monospace;
-    color: white;
-  }
+<h6> Version 0.0.1 </h6>
 
-  canvas {
-    background-color: #70c5ce;
-    border: 4px solid #000;
-    display: block;
-  }
+<body id="myBody" style="background-repeat:repeat; background-size: 80%; background-color: #70c5ce;" background="myBackground01.jpg">
 
-  .ui-container {
-    margin-top: 15px;
-    text-align: center;
-  }
-
-  #status {
-    font-size: 24px;
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    height: 30px; /* Prevents layout jump */
-  }
-
-  /* Styling the Restart Button */
-  #restartBtn {
-    padding: 10px 25px;
-    font-size: 18px;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
-    background-color: #F4D03F;
-    border: 3px solid #000;
-    cursor: pointer;
-    text-transform: uppercase;
-  }
-
-  #restartBtn:hover {
-    background-color: #fff;
-  }
-
-  #restartBtn:active {
-    transform: translateY(2px);
-  }
-</style>
-</head>
-<body>
-
-<div id="status">Navigate through the pipe!</div>
-<canvas id="gameCanvas" width="800" height="400"></canvas>
-
-<div class="ui-container">
-  <button id="restartBtn" onclick="restartGame()">Restart Level</button>
-  <p>Use <b>WASD</b> to Move</p>
-</div>
+<h1 align=center>Flappy Bird Level 1</h1>
+<h3 align=center id="myStatus">Use WASD to pass the pipe!</h3>
 
 <script>
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const statusText = document.getElementById("status");
+   // global variables
+   let myGlobalX = 0
+   let myClock
 
-let bird, pipe, levelComplete = false;
-const keys = {};
+   function myHitOther(my1, my2){
+       left1   = parseInt(document.getElementById(my1).style.left)
+       right1  = left1 + parseInt(document.getElementById(my1).style.width)
+       top1    = parseInt(document.getElementById(my1).style.top)   
+       bottom1 = top1   + parseInt(document.getElementById(my1).style.height)
+       left2   = parseInt(document.getElementById(my2).style.left)
+       right2  = left2 + parseInt(document.getElementById(my2).style.width)
+       top2    = parseInt(document.getElementById(my2).style.top)   
+       bottom2 = top2   + parseInt(document.getElementById(my2).style.height)
+       
+       if ((right1 >= left2) && (bottom1 >= top2) && (left1 <= right2) && (top1 <= bottom2)){
+           return true
+       }
+   }
 
-function init() {
-  // Reset Player
-  bird = {
-    x: 100,
-    y: 200,
-    w: 30,
-    h: 30,
-    speed: 4,
-    color: "#F4D03F"
-  };
+   function myCheckHit(){
+       // 1. Check if you hit the pipe (Lose condition)
+       if (myHitOther('myBird', 'myPipe')){
+           alert('You hit the pipe! Try again.')
+           document.getElementById('myBird').style.left = '50px'
+           document.getElementById('myBird').style.top = '200px'
+       }
 
-  // Reset Pipe
-  pipe = {
-    x: 500,
-    w: 80,
-    gapY: 120,
-    gapH: 150,
-    color: "#2D5A27"
-  };
+       // 2. Check if you passed the pipe (Win condition)
+       let birdLeft = parseInt(document.getElementById('myBird').style.left)
+       let pipeLeft = parseInt(document.getElementById('myPipe').style.left)
+       let pipeWidth = parseInt(document.getElementById('myPipe').style.width)
 
-  levelComplete = false;
-  statusText.innerText = "Navigate through the pipe!";
-  statusText.style.color = "white";
-}
+       if (birdLeft > (pipeLeft + pipeWidth)){
+           alert('Level 1 Complete! Going to Level 2...')
+           // This is the link to your Level 2
+           location = 'https://mennya101.github.io/game-dev-Eman-2025/FlappyBird/FlappyBird.html'
+       }
+   }
 
-// Function triggered by the button
-function restartGame() {
-  init();
-}
-
-window.addEventListener("keydown", e => keys[e.code] = true);
-window.addEventListener("keyup", e => keys[e.code] = false);
-
-function update() {
-  if (levelComplete) return;
-
-  if (keys["KeyW"]) bird.y -= bird.speed;
-  if (keys["KeyS"]) bird.y += bird.speed;
-  if (keys["KeyA"]) bird.x -= bird.speed;
-  if (keys["KeyD"]) bird.x += bird.speed;
-
-  // Canvas boundaries
-  if (bird.x < 0) bird.x = 0;
-  if (bird.y < 0) bird.y = 0;
-  if (bird.y + bird.h > canvas.height) bird.y = canvas.height - bird.h;
-
-  // Completion check
-  if (bird.x > pipe.x + pipe.w) {
-    levelComplete = true;
-    statusText.innerText = "Level Completed!";
-    statusText.style.color = "#2ecc71";
-  }
-}
-
-function draw() {
-  ctx.fillStyle = "#70c5ce";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Draw Pipe
-  ctx.fillStyle = pipe.color;
-  ctx.fillRect(pipe.x, 0, pipe.w, pipe.gapY);
-  ctx.fillRect(pipe.x, pipe.gapY + pipe.gapH, pipe.w, canvas.height);
-
-  // Draw Pipe Lips
-  ctx.fillStyle = "#1e3d1a";
-  ctx.fillRect(pipe.x - 5, pipe.gapY - 20, pipe.w + 10, 20);
-  ctx.fillRect(pipe.x - 5, pipe.gapY + pipe.gapH, pipe.w + 10, 20);
-
-  // Draw Player
-  ctx.fillStyle = bird.color;
-  ctx.fillRect(bird.x, bird.y, bird.w, bird.h);
-  ctx.fillStyle = "black";
-  ctx.fillRect(bird.x + bird.w - 8, bird.y + 6, 4, 4);
-}
-
-function gameLoop() {
-  update();
-  draw();
-  requestAnimationFrame(gameLoop);
-}
-
-init();
-gameLoop();
+   // WASD Movement
+   document.addEventListener('keydown', (e) => {
+       let bird = document.getElementById('myBird')
+       let speed = 15
+       if (e.key.toLowerCase() == 'w') bird.style.top = (parseInt(bird.style.top) - speed) + 'px'
+       if (e.key.toLowerCase() == 's') bird.style.top = (parseInt(bird.style.top) + speed) + 'px'
+       if (e.key.toLowerCase() == 'a') bird.style.left = (parseInt(bird.style.left) - speed) + 'px'
+       if (e.key.toLowerCase() == 'd') bird.style.left = (parseInt(bird.style.left) + speed) + 'px'
+       
+       myCheckHit() // Check for win/loss after every move
+   })
 </script>
 
+<img id="myBird" style="position:absolute; width:60px; height:45px; top:200px; left:50px;" 
+     src="https://raw.githubusercontent.com/sourabhv/FlapPyBird/master/assets/sprites/yellowbird-midflap.png">
+
+<img id="myPipe" style="position:absolute; width:80px; height:400px; top:0px; left:400px;" 
+     src="https://raw.githubusercontent.com/sourabhv/FlapPyBird/master/assets/sprites/pipe-green.png">
+
+<div style="margin-top: 450px; text-align: center;">
+    <input type="button" value="Restart Level" onclick="location.reload()">
+    
+    <input type="button" value="Auto Background Scroll" onclick="{
+      clearInterval(myClock)
+      myClock = setInterval(function(){
+          myGlobalX -= 5
+          document.getElementById('myBody').style.backgroundPosition = myGlobalX + 'px 0px'
+      }, 100)
+    }">
+</div>
+
 </body>
-</html>
