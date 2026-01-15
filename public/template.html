@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird - Final Project</title>
+    <title>Flappy Bird - WASD Edition</title>
     <style>
         body {
             margin: 0;
@@ -27,12 +27,20 @@
             font-size: 24px;
             text-shadow: 2px 2px #000;
             pointer-events: none;
+            text-align: center;
+        }
+        .controls-hint {
+            font-size: 14px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div id="ui">Score: <span id="scoreVal">0</span></div>
+    <div id="ui">
+        <div>Score: <span id="scoreVal">0</span></div>
+        <div class="controls-hint">Use W, A, S, or D to Flap</div>
+    </div>
     <canvas id="gameCanvas"></canvas>
 
     <script>
@@ -40,14 +48,13 @@
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('scoreVal');
 
-        // Game Constants
         canvas.width = 400;
         canvas.height = 600;
 
-        let bird = { x: 50, y: 300, w: 30, h: 30, velocity: 0, gravity: 0.6, jump: -10 };
+        let bird = { x: 50, y: 300, w: 30, h: 30, velocity: 0, gravity: 0.6, jump: -9 };
         let pipes = [];
-        let pipeWidth = 50;
-        let pipeGap = 150;
+        let pipeWidth = 60;
+        let pipeGap = 160;
         let frameCount = 0;
         let score = 0;
         let gameOver = false;
@@ -73,17 +80,15 @@
         function update() {
             if (gameOver) return;
 
-            // Bird Physics
             bird.velocity += bird.gravity;
             bird.y += bird.velocity;
 
-            // Pipe Logic
-            if (frameCount % 90 === 0) createPipe();
+            if (frameCount % 100 === 0) createPipe();
 
             for (let i = pipes.length - 1; i >= 0; i--) {
-                pipes[i].x -= 3;
+                pipes[i].x -= 2.5;
 
-                // Collision Detection
+                // Collision
                 if (
                     bird.x < pipes[i].x + pipeWidth &&
                     bird.x + bird.w > pipes[i].x &&
@@ -92,7 +97,6 @@
                     gameOver = true;
                 }
 
-                // Score increment
                 if (!pipes[i].passed && bird.x > pipes[i].x + pipeWidth) {
                     score++;
                     scoreElement.innerText = score;
@@ -102,7 +106,6 @@
                 if (pipes[i].x + pipeWidth < 0) pipes.splice(i, 1);
             }
 
-            // Floor/Ceiling boundaries
             if (bird.y + bird.h > canvas.height || bird.y < 0) {
                 gameOver = true;
             }
@@ -111,31 +114,29 @@
         }
 
         function draw() {
-            // Background
             ctx.fillStyle = "#70c5ce";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Pipes
+            // Pipes
             ctx.fillStyle = "#2ecc71";
             pipes.forEach(p => {
-                // Top pipe
                 ctx.fillRect(p.x, 0, pipeWidth, p.y);
-                // Bottom pipe
                 ctx.fillRect(p.x, p.y + pipeGap, pipeWidth, canvas.height);
             });
 
-            // Draw Bird
+            // Bird
             ctx.fillStyle = "#f1c40f";
             ctx.fillRect(bird.x, bird.y, bird.w, bird.h);
 
             if (gameOver) {
-                ctx.fillStyle = "rgba(0,0,0,0.5)";
-                ctx.fillRect(0,0, canvas.width, canvas.height);
+                ctx.fillStyle = "rgba(0,0,0,0.6)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "white";
-                ctx.font = "30px Arial";
-                ctx.fillText("GAME OVER", canvas.width/2 - 80, canvas.height/2);
+                ctx.font = "bold 30px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("GAME OVER", canvas.width/2, canvas.height/2);
                 ctx.font = "20px Arial";
-                ctx.fillText("Click to Restart", canvas.width/2 - 70, canvas.height/2 + 40);
+                ctx.fillText("Press W, A, S, or D to Restart", canvas.width/2, canvas.height/2 + 40);
             }
         }
 
@@ -149,17 +150,16 @@
             }
         }
 
-        // Controls
+        // --- WASD Key Logic ---
         window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                if (gameOver) resetGame();
-                else bird.velocity = bird.jump;
+            const key = e.key.toLowerCase();
+            if (['w', 'a', 's', 'd'].includes(key)) {
+                if (gameOver) {
+                    resetGame();
+                } else {
+                    bird.velocity = bird.jump;
+                }
             }
-        });
-
-        canvas.addEventListener('mousedown', () => {
-            if (gameOver) resetGame();
-            else bird.velocity = bird.jump;
         });
 
         resetGame();
